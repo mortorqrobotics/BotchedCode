@@ -7,10 +7,13 @@ package frc.BotchedCode;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
 public class Robot extends TimedRobot {
@@ -19,6 +22,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   private final boolean kUseLimelight = false;
+  private static NetworkTable network = NetworkTableInstance.getDefault().getTable(RobotMap.LIMELIGHT_NAME);
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -28,11 +32,20 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
+    SmartDashboard.putNumber("Gyro", RobotContainer.gyro.getYaw().getValueAsDouble());
+    //Vision + Odometry
+    SmartDashboard.putNumber("PoseX", RobotContainer.drivetrain.getState().Pose.getX());
+    SmartDashboard.putNumber("PoseY", RobotContainer.drivetrain.getState().Pose.getY());
+    //Odometry
+    SmartDashboard.putNumber("OdomX", RobotContainer.drivetrain.getOdometryPose().getX());
+    SmartDashboard.putNumber("OdomY", RobotContainer.drivetrain.getOdometryPose().getY());
+
     //Module Offsets
-    SmartDashboard.putNumber("Mod0 Offset", Units.rotationsToDegrees(m_robotContainer.drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod1 Offset", Units.rotationsToDegrees(m_robotContainer.drivetrain.getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod2 Offset", Units.rotationsToDegrees(m_robotContainer.drivetrain.getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod3 Offset", Units.rotationsToDegrees(m_robotContainer.drivetrain.getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    SmartDashboard.putNumber("Mod0 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    SmartDashboard.putNumber("Mod1 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    SmartDashboard.putNumber("Mod2 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    SmartDashboard.putNumber("Mod3 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
      * Users typically need to provide a standard deviation that scales with the distance to target
@@ -43,8 +56,8 @@ public class Robot extends TimedRobot {
      */
     if (kUseLimelight) {
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-      if (llMeasurement != null) {
-        m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+      if (llMeasurement != null && network.getEntry("tv").getDouble(0) >= 1) {
+        RobotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
     }
   }

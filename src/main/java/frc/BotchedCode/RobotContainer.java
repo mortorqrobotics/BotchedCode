@@ -7,6 +7,7 @@ package frc.BotchedCode;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -22,6 +23,10 @@ import frc.BotchedCode.Constants.SwerveConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
+
+    public static Pigeon2 gyro = new Pigeon2(30, "1515Canivore");
+
+
     private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -38,7 +43,7 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final CommandSwerveDrivetrain drivetrain = SwerveConstants.createDrivetrain();
+    public final static CommandSwerveDrivetrain drivetrain = SwerveConstants.createDrivetrain();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
