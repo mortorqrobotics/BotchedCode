@@ -44,7 +44,9 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        // This is really cool, it takes every single auto from path planner and 
+        // puts them in a sendable chooser with the parameter as the default auto
+        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
