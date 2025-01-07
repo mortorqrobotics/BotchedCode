@@ -1,4 +1,4 @@
-//LimelightHelpers v1.9 (REQUIRES 2024.9.1)
+//LimelightHelpers v1.9 (REQUIRES 2025.9.1)
 
 package frc.BotchedCode.Utils;
 
