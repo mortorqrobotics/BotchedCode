@@ -46,6 +46,8 @@ public class RobotContainer {
     public RobotContainer() {
         // This is really cool, it takes every single auto from path planner and 
         // puts them in a sendable chooser with the parameter as the default auto
+        // Test this to see if it solves the error because a nonexistant auto name
+        // "tests" was orginally here
         autoChooser = AutoBuilder.buildAutoChooser("New Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
