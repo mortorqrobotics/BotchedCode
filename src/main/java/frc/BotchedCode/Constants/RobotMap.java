@@ -8,8 +8,8 @@ public class RobotMap {
     public static final double kPositionStdDevTheta = 10;
 
     // Increase these numbers to trust global measurements from vision less.
-    public static final double kVisionStdDevX = 5;
-    public static final double kVisionStdDevY = 5;
+    public static final double kVisionStdDevX = 25;
+    public static final double kVisionStdDevY = 25;
     public static final double kVisionStdDevTheta = 500;
 
     public static final String LIMELIGHT_NAME = "limelight";

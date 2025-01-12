@@ -8,7 +8,9 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
@@ -38,16 +41,13 @@ public class RobotContainer {
 
     private final static CommandXboxController joystick = new CommandXboxController(0);
     
-        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        public final CommandSwerveDrivetrain drivetrain = createDrivetrain();
     
         /* Path follower */
         private final SendableChooser<Command> autoChooser;
     
         public RobotContainer() {
-            // This is really cool, it takes every single auto from path planner and 
-            // puts them in a sendable chooser with the parameter as the default auto
-            // Test this to see if it solves the error because a nonexistant auto name
-            // "tests" was orginally here
+  
             autoChooser = AutoBuilder.buildAutoChooser("New Auto");
             SmartDashboard.putData("Auto Mode", autoChooser);
     
@@ -95,13 +95,13 @@ public class RobotContainer {
         
         public static double getRobotSpeed() {
             
-            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.6 : 1.0;
+            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
         // return 0.7;
         }
 
         public static double getRobotYawSpeed() {
             
-            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.6 : 0.7*(1.0/0.9);
+            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
         // return 0.7;
         }
 
@@ -109,5 +109,14 @@ public class RobotContainer {
         /* Run the path selected from the auto chooser */
         System.out.println(autoChooser.getSelected().getName());
         return autoChooser.getSelected();
+    }
+
+    public static CommandSwerveDrivetrain createDrivetrain() {
+        return new CommandSwerveDrivetrain(
+            TunerConstants.DrivetrainConstants, 0,
+            VecBuilder.fill(RobotMap.kPositionStdDevX, RobotMap.kPositionStdDevY, Units.degreesToRadians(RobotMap.kPositionStdDevTheta)),
+            VecBuilder.fill(RobotMap.kVisionStdDevX, RobotMap.kVisionStdDevY, Units.degreesToRadians(RobotMap.kVisionStdDevTheta)),
+            TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
+        );
     }
 }
