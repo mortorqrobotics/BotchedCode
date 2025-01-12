@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
      * Users typically need to provide a standard deviation that scales with the distance to target
@@ -62,7 +63,11 @@ public class Robot extends TimedRobot {
         // adjusted so limelight is opposite to robot forward
         Pose2d adjusted = new Pose2d(result.getX(), result.getY(), result.getRotation().plus(Rotation2d.fromDegrees(180)));
 
+        SmartDashboard.putNumber("llX", adjusted.getX() * 100);
+        SmartDashboard.putNumber("llY", adjusted.getY() * 100);
+
         m_robotContainer.drivetrain.addVisionMeasurement(adjusted, Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()));
+
       }
     }
   }
