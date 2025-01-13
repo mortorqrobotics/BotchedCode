@@ -6,6 +6,7 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
 public class Robot extends TimedRobot {
@@ -56,7 +58,15 @@ public class Robot extends TimedRobot {
 
 
     if (kUseLimelight) {
-      //Pose2d result = LimelightHelpers.toPose2D(network.getEntry("botpose_wpiblue").getDoubleArray(new double[0]));
+      LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
+
+      if(Math.abs(m_robotContainer.gyro.getAngularVelocityZWorld().getValueAsDouble()) < 720 && result.tagCount > 0){
+        Pose2d adjusted = new Pose2d(result.pose.getX(), result.pose.getY(), result.pose.getRotation().plus(Rotation2d.fromDegrees(180)));
+        m_robotContainer.drivetrain.addVisionMeasurement(adjusted, result.timestampSeconds);
+      }
+      
+      /* 
       if (network.getEntry("tv").getDouble(0) >= 1) {
 
         Pose2d result = LimelightHelpers.toPose2D(network.getEntry("botpose_wpiblue").getDoubleArray(new double[6]));
@@ -69,6 +79,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.addVisionMeasurement(adjusted, Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()));
 
       }
+      */
     }
   }
 

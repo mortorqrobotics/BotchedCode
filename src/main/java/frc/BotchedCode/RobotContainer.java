@@ -5,6 +5,7 @@
 package frc.BotchedCode;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -41,69 +42,70 @@ public class RobotContainer {
 
     private final static CommandXboxController joystick = new CommandXboxController(0);
     
-        public final CommandSwerveDrivetrain drivetrain = createDrivetrain();
-    
-        /* Path follower */
-        private final SendableChooser<Command> autoChooser;
-    
-        public RobotContainer() {
-  
-            autoChooser = AutoBuilder.buildAutoChooser("New Auto");
-            SmartDashboard.putData("Auto Mode", autoChooser);
-    
-            configureBindings();
-        }
-    
-        private void configureBindings() {
-            // Note that X is defined as forward according to WPILib convention,
-            // and Y is defined as to the left according to WPILib convention.
-            drivetrain.setDefaultCommand(
-                // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() ->
-                    drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
-                        .withVelocityY(-joystick.getLeftX() * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
-                        .withRotationalRate(-joystick.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
-                )
-            );
-    
-            joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-            joystick.b().whileTrue(drivetrain.applyRequest(() ->
-                point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-            ));
-    
-            joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(0.5).withVelocityY(0))
-            );
-            joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-                forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-            );
-            
-    
-            // Run SysId routines when holding back/start and X/Y.
-            // Note that each routine should be run exactly once in a single log.
-            //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-            //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-            // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-            // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    
-            // reset the field-centric heading on left bumper press
-            joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    
-            drivetrain.registerTelemetry(logger::telemeterize);
-        }
-        
-        
-        public static double getRobotSpeed() {
-            
-            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
-        // return 0.7;
-        }
+    public final CommandSwerveDrivetrain drivetrain = createDrivetrain();
+    public Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
 
-        public static double getRobotYawSpeed() {
-            
-            return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
-        // return 0.7;
-        }
+    /* Path follower */
+    private final SendableChooser<Command> autoChooser;
+
+    public RobotContainer() {
+
+        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
+        SmartDashboard.putData("Auto Mode", autoChooser);
+
+        configureBindings();
+    }
+
+    private void configureBindings() {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
+            )
+        );
+
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
+
+        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        );
+        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        );
+        
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        // reset the field-centric heading on left bumper press
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        drivetrain.registerTelemetry(logger::telemeterize);
+    }
+    
+    
+    public static double getRobotSpeed() {
+        
+        return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
+    // return 0.7;
+    }
+
+    public static double getRobotYawSpeed() {
+        
+        return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
+    // return 0.7;
+    }
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
