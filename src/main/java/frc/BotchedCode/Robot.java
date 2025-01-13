@@ -58,12 +58,14 @@ public class Robot extends TimedRobot {
 
 
     if (kUseLimelight) {
-      LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
+      var driveState = m_robotContainer.drivetrain.getState();
+      double headingDeg = driveState.Pose.getRotation().getDegrees();
+      double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-      if(Math.abs(m_robotContainer.gyro.getAngularVelocityZWorld().getValueAsDouble()) < 720 && result.tagCount > 0){
-        Pose2d adjusted = new Pose2d(result.pose.getX(), result.pose.getY(), result.pose.getRotation().plus(Rotation2d.fromDegrees(180)));
-        m_robotContainer.drivetrain.addVisionMeasurement(adjusted, result.timestampSeconds);
+      LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, headingDeg, 0, 0, 0, 0, 0);
+      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
+      if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRps < 2.0) {
+        m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
       
       /* 
