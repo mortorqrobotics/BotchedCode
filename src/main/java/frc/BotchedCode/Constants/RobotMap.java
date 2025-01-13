@@ -10,7 +10,7 @@ public class RobotMap {
     // Increase these numbers to trust global measurements from vision less.
     public static final double kVisionStdDevX = 15;
     public static final double kVisionStdDevY = 15;
-    public static final double kVisionStdDevTheta = 500;
+    public static final double kVisionStdDevTheta = 99999;
 
     public static final String LIMELIGHT_NAME = "limelight";
     public static final double DIFFERENCE_CUTOFF_THRESHOLD = 1.5; // Max difference between vision and odometry pose
