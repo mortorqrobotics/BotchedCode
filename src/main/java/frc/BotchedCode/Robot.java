@@ -6,7 +6,6 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -61,14 +60,16 @@ public class Robot extends TimedRobot {
       var driveState = m_robotContainer.drivetrain.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+      double yawRate = m_robotContainer.gyro.getAngularVelocityZWorld().getValueAsDouble();
 
-      LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, headingDeg, 0, 0, 0, 0, 0);
+
+      LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, headingDeg, yawRate, 0, 0, 0, 0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
       if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRps < 2.0) {
         m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
       
-      /* 
+      
       if (network.getEntry("tv").getDouble(0) >= 1) {
 
         Pose2d result = LimelightHelpers.toPose2D(network.getEntry("botpose_wpiblue").getDoubleArray(new double[6]));
@@ -81,7 +82,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.addVisionMeasurement(adjusted, Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()));
 
       }
-      */
+      
     }
   }
 

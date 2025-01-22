@@ -4,8 +4,8 @@
 
 package frc.BotchedCode;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -18,14 +18,20 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.ManualElevatorDown;
+import frc.BotchedCode.Commands.ManualElevatorUp;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
+import frc.BotchedCode.Subsystems.Elevator;
 
 
 
 public class RobotContainer {
+    public static Elevator elevator;
+
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -40,7 +46,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final static CommandXboxController joystick = new CommandXboxController(0);
+    private final static CommandXboxController controller1 = new CommandXboxController(0);
+    private final static CommandXboxController controller2 = new CommandXboxController(1);
     
     public final CommandSwerveDrivetrain drivetrain = createDrivetrain();
     public Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
@@ -53,6 +60,8 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("New Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+        elevator = new Elevator();
+
         configureBindings();
     }
 
@@ -62,24 +71,30 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-controller1.getLeftY() * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-controller1.getLeftX() * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-controller1.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
             )
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        controller1.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
         ));
-
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        
+        controller1.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        controller1.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
-        
+        controller2.leftTrigger().whileTrue(new ManualElevatorDown(elevator));
+        controller2.leftBumper().whileTrue(new ManualElevatorUp(elevator));
+
+        controller2.a().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)));
+        controller2.b().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)));
+        controller2.y().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)));
+        controller2.x().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -89,7 +104,7 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        controller1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -97,13 +112,13 @@ public class RobotContainer {
     
     public static double getRobotSpeed() {
         
-        return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
+        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
     // return 0.7;
     }
 
     public static double getRobotYawSpeed() {
         
-        return joystick.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
+        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
     // return 0.7;
     }
 
