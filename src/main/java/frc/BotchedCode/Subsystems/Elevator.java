@@ -2,7 +2,8 @@ package frc.BotchedCode.Subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
@@ -12,13 +13,13 @@ public class Elevator extends SubsystemBase{
 
     public TalonFX mElevator;
     private DigitalInput bottomSwitch;
-    private PIDController heightController;
+    private ProfiledPIDController heightController;
     private double setpoint;
 
     public Elevator(){
         mElevator = new TalonFX(RobotMap.ELEVATOR_ID, RobotMap.SUBSYSTEM_BUS); //TODO
         bottomSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH_CHANNEL); //TODO
-        heightController = new PIDController(0, 0, 0); //TODO
+        heightController = new ProfiledPIDController(RobotMap.ELEVATOR_KP, RobotMap.ELEVATOR_KI, RobotMap.ELEVATOR_KD, new TrapezoidProfile.Constraints(RobotMap.ELEVATOR_MAX_SPEED, RobotMap.ELEVATOR_MAX_ACCELERATION)); //TODO
         setpoint = 0;
         
     }
@@ -30,13 +31,7 @@ public class Elevator extends SubsystemBase{
 
     public void down(){
         // mElevator.set(-RobotMap.ELEVATOR_SPEED);
-        if(bottomSwitchTriggered()){
-            mElevator.setPosition(0);
-            setSetpoint(mElevator.getPosition().getValueAsDouble());
-        }
-        else{
-            setSetpoint(mElevator.getPosition().getValueAsDouble() - RobotMap.MANUAL_ELEVATOR_INCREMENTATION);
-        }
+        setSetpoint(mElevator.getPosition().getValueAsDouble() - RobotMap.MANUAL_ELEVATOR_INCREMENTATION);
     }
 
     public void setSetpoint(double setpoint){
@@ -47,8 +42,12 @@ public class Elevator extends SubsystemBase{
         mElevator.setPosition(0);
     }
 
-    public boolean bottomSwitchTriggered(){
+    public boolean reachedLowerLimit(){
         return bottomSwitch.get();
+    }
+
+    public boolean reachedUpperLimit(){
+        return mElevator.getPosition().getValueAsDouble() > RobotMap.MAX_ELEVATOR_EXTENSION;
     }
 
     public void end(){
@@ -56,7 +55,12 @@ public class Elevator extends SubsystemBase{
     }
     @Override
     public void periodic(){
-        mElevator.set(heightController.calculate(mElevator.getPosition().getValueAsDouble(), setpoint));
-
+        double speed = heightController.calculate(mElevator.getPosition().getValueAsDouble(), setpoint);
+        if((reachedLowerLimit() && speed < 0) || (reachedUpperLimit() && speed > 0)){
+            mElevator.set(0);
+        }
+        else{
+            mElevator.set(speed);
+        }
     }
 }
