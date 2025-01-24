@@ -35,4 +35,14 @@ public class RobotMap {
     public static final double ELEVATOR_KI = 0; //TODO
     public static final double ELEVATOR_KD = 0; //TODO
     public static final int ELEVATOR_LIMIT_SWITCH_CHANNEL = -1; //TODO
+    public static final int PIVOT_ID = 0; //TODO
+    public static final int PIVOT_CANCODER_ID = 0; //TODO
+    public static final double PIVOT_KP = 0; //TODO
+    public static final double PIVOT_KI = 0; //TODO
+    public static final double PIVOT_KD = 0; //TODO
+    public static final double MANUAL_PIVOT_INCREMENTATION = 0; //TODO
+    public static final double PIVOT_LOWER_LIMIT = 0; //TODO
+    public static final double PIVOT_UPPER_LIMIT = 0; //TODO
+    public static final double PIVOT_MAX_SPEED = 0; //TODO
+    public static final double PIVOT_MAX_ACCELERATION = 0; //TODO
 }

@@ -1,5 +1,5 @@
 package frc.BotchedCode.Subsystems;
 
-public  class Coral {
+public  class IntakeCoral {
     
 }

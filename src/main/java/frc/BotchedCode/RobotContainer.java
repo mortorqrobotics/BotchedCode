@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorUp;
@@ -26,11 +27,14 @@ import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Subsystems.Elevator;
+import frc.BotchedCode.Subsystems.Pivot;
 
 
 
 public class RobotContainer {
     public static Elevator elevator;
+
+    public static Pivot pivot;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -62,6 +66,8 @@ public class RobotContainer {
 
         elevator = new Elevator();
 
+        pivot = new Pivot();
+
         configureBindings();
     }
 
@@ -91,10 +97,11 @@ public class RobotContainer {
         controller2.leftTrigger().whileTrue(new ManualElevatorDown(elevator));
         controller2.leftBumper().whileTrue(new ManualElevatorUp(elevator));
 
-        controller2.a().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)));
-        controller2.b().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)));
-        controller2.y().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)));
-        controller2.x().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)));
+        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L2_HEIGHT))));
+        controller2.b().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L3_HEIGHT))));
+        controller2.y().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_HEIGHT))));
+        controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))));
+
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
