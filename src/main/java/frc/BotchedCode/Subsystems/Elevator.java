@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase{
     }
 
     public boolean reachedUpperLimit(){
-        return mElevator.getPosition().getValueAsDouble() > RobotMap.MAX_ELEVATOR_EXTENSION;
+        return mElevator.getPosition().getValueAsDouble() > RobotMap.ELEVATOR_UPPER_LIMIT;
     }
 
     public void end(){

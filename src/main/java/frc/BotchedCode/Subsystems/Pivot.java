@@ -48,7 +48,7 @@ public class Pivot extends SubsystemBase{
         
         if (wrapping){
             if (canCoder.getAbsolutePosition().getValueAsDouble() < 0){
-                return 1+canCoder.getAbsolutePosition().getValueAsDouble();
+                return 2+canCoder.getAbsolutePosition().getValueAsDouble();
             }
             else{
                 return canCoder.getAbsolutePosition().getValueAsDouble();
@@ -71,7 +71,7 @@ public class Pivot extends SubsystemBase{
     public void end(){
         mpivot.set(0);
     }
-    
+
     @Override
     public void periodic(){
         double speed = angleController.calculate(getCANCoderValue(), setpoint);

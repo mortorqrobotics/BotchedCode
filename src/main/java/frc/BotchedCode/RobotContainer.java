@@ -94,10 +94,11 @@ public class RobotContainer {
         controller1.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
-        controller2.leftTrigger().whileTrue(new ManualElevatorDown(elevator));
-        controller2.leftBumper().whileTrue(new ManualElevatorUp(elevator));
+        
+        controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
+        controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
 
-        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L2_HEIGHT))));
+        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L2_HEIGHT)))); //TODO
         controller2.b().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L3_HEIGHT))));
         controller2.y().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_HEIGHT))));
         controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))));
