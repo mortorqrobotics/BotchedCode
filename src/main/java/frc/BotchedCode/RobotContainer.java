@@ -23,10 +23,16 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorUp;
+import frc.BotchedCode.Commands.IntakeAlgaeIn;
+import frc.BotchedCode.Commands.IntakeAlgaeOut;
+import frc.BotchedCode.Commands.IntakeCoralIn;
+import frc.BotchedCode.Commands.IntakeCoralOut;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Subsystems.Elevator;
+import frc.BotchedCode.Subsystems.IntakeAlgae;
+import frc.BotchedCode.Subsystems.IntakeCoral;
 import frc.BotchedCode.Subsystems.Pivot;
 
 
@@ -35,6 +41,10 @@ public class RobotContainer {
     public static Elevator elevator;
 
     public static Pivot pivot;
+
+    public static IntakeCoral intakeCoral;
+
+    public static IntakeAlgae intakeAlgae;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -58,6 +68,8 @@ public class RobotContainer {
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
+    
+    
 
     public RobotContainer() {
 
@@ -67,6 +79,10 @@ public class RobotContainer {
         elevator = new Elevator();
 
         pivot = new Pivot();
+
+        intakeAlgae = new IntakeAlgae();
+
+        intakeCoral = new IntakeCoral();
 
         configureBindings();
     }
@@ -104,6 +120,12 @@ public class RobotContainer {
         controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))));
 
 
+
+        controller2.leftBumper().whileTrue(new IntakeAlgaeIn(intakeAlgae)); 
+        controller2.rightBumper().whileTrue(new IntakeAlgaeOut(intakeAlgae));
+
+        controller2.leftBumper().whileTrue(new IntakeCoralIn(intakeCoral)); 
+        controller2.rightBumper().whileTrue(new IntakeCoralOut(intakeCoral));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
