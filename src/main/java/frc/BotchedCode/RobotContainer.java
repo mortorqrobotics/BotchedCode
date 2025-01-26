@@ -21,12 +21,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.BotchedCode.Commands.ManualElevatorDown;
-import frc.BotchedCode.Commands.ManualElevatorUp;
 import frc.BotchedCode.Commands.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.IntakeCoralIn;
 import frc.BotchedCode.Commands.IntakeCoralOut;
+import frc.BotchedCode.Commands.ManualElevatorDown;
+import frc.BotchedCode.Commands.ManualElevatorUp;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
@@ -114,10 +114,10 @@ public class RobotContainer {
         controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
 
-        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L2_HEIGHT)))); //TODO
-        controller2.b().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L3_HEIGHT))));
-        controller2.y().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_HEIGHT))));
-        controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))));
+        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L2_ANGLE)))); //TODO
+        controller2.b().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L3_ANGLE))));
+        controller2.y().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
+        controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))));
 
 
 
