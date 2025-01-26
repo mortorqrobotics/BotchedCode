@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.BarbIn;
+import frc.BotchedCode.Commands.BarbOut;
 import frc.BotchedCode.Commands.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.IntakeCoralIn;
@@ -29,6 +31,7 @@ import frc.BotchedCode.Commands.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorUp;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
+import frc.BotchedCode.Subsystems.Barb;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Subsystems.Elevator;
 import frc.BotchedCode.Subsystems.IntakeAlgae;
@@ -45,6 +48,8 @@ public class RobotContainer {
     public static IntakeCoral intakeCoral;
 
     public static IntakeAlgae intakeAlgae;
+
+    public static Barb barb;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -83,6 +88,9 @@ public class RobotContainer {
         intakeAlgae = new IntakeAlgae();
 
         intakeCoral = new IntakeCoral();
+
+        barb = new Barb();
+        
 
         configureBindings();
     }
@@ -126,6 +134,9 @@ public class RobotContainer {
 
         controller2.leftBumper().whileTrue(new IntakeCoralIn(intakeCoral)); 
         controller2.rightBumper().whileTrue(new IntakeCoralOut(intakeCoral));
+
+        controller1.x().whileTrue(new BarbIn(barb));
+        controller1.y().whileTrue(new BarbOut(barb));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

@@ -11,8 +11,8 @@ import frc.BotchedCode.Constants.RobotMap;
 
 public class IntakeAlgae extends SubsystemBase {
     
-    private SparkMax leftIntakeAlgae;
-    private SparkMax rightIntakeAlgae;
+    private final SparkMax leftIntakeAlgae;
+    private final SparkMax rightIntakeAlgae;
 
 
     public IntakeAlgae(){

@@ -80,10 +80,11 @@ public class RobotMap {
 
 
     public static final double RIGHT_INTAKECORAL_SPEED = 0; //TODO
-    public static final double DOWN_BARB_SPEED = 0;//TODO 
-    public static final double UP_BARB_SPEED = 0;//TODO 
-    public static final int UP_BARB_ID = 0;//TODO 
-    public static final int DOWN_BARB_ID = -1;//TODO 
+
+    public static final double BARB_SPEED = 0;//TODO 
+    
+    public static final int BARB_ID = -1;//TODO 
+
     public static final double MANUAL_ELEVATOR_SPEED = -1; //TODO
 
 }
