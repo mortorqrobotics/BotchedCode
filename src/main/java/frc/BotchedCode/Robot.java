@@ -59,9 +59,10 @@ public class Robot extends TimedRobot {
 
     if (kUseLimelight) {
       var driveState = m_robotContainer.drivetrain.getState();
-      double headingDeg = driveState.Pose.getRotation().getDegrees();
+      double headingDeg = driveState.Pose.getRotation().getDegrees(); // this is esentually directly from the external IMU since we barely trust vision angle
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
+      //assuming start facing red wall (MUST KNOW STARTING ANGLE) TODO
       LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, headingDeg, 0, 0, 0, 0, 0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
       if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRps < 2.0) {
