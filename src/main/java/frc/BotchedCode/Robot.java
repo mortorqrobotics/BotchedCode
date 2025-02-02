@@ -6,14 +6,9 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,10 +22,9 @@ public class Robot extends TimedRobot {
 
   private final boolean kUseLimelight = true;
 
-  private static NetworkTable network = NetworkTableInstance.getDefault().getTable("limelight");
-
   public Robot() {
     m_robotContainer = new RobotContainer();
+    DataLogManager.start();
   }
 
   @Override
@@ -45,6 +39,7 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+    SmartDashboard.putNumber("PoseRot", m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
 
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
@@ -65,6 +60,7 @@ public class Robot extends TimedRobot {
       //assuming start facing red wall (MUST KNOW STARTING ANGLE) TODO
       LimelightHelpers.SetRobotOrientation(RobotMap.LIMELIGHT_NAME, headingDeg, 0, 0, 0, 0, 0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(RobotMap.LIMELIGHT_NAME);
+      
       if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRps < 2.0) {
         m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
