@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -49,18 +48,10 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
-    private SlewRateLimiter filter1;
-    private SlewRateLimiter filter2;
-    private SlewRateLimiter filter3;
-
     public RobotContainer() {
 
         autoChooser = AutoBuilder.buildAutoChooser("New Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        filter1 = new SlewRateLimiter(0.5);
-        filter2 = new SlewRateLimiter(0.5);
-        filter3 = new SlewRateLimiter(0.5);
 
         configureBindings();
     }
@@ -71,9 +62,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-filter1.calculate(joystick.getLeftY()) * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(-filter2.calculate(joystick.getLeftX()) * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-filter3.calculate(joystick.getRightX()) * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * getRobotSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * getRobotSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
             )
         );
 
