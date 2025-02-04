@@ -5,6 +5,7 @@ import frc.BotchedCode.Subsystems.IntakeCoral;
 
 public class IntakeCoralIn extends Command {
 
+    private int count;
     private final IntakeCoral intakeCoral;
 
     public IntakeCoralIn(IntakeCoral intakeCoral) {
@@ -13,8 +14,19 @@ public class IntakeCoralIn extends Command {
     }
 
     @Override
+    public void initialize(){
+        count = 0;
+    }
+
+    @Override
     public void execute() {
+        count ++;
         intakeCoral.in();
+    }
+
+    @Override
+    public boolean isFinished(){
+        return intakeCoral.pickedUp() && count < 20;
     }
 
     @Override

@@ -18,6 +18,11 @@ public class IntakeAlgaeOut extends Command {
     }
 
     @Override
+    public boolean isFinished(){
+        return intakeAlgae.released();
+    }
+
+    @Override
     public void end(boolean interrupted) {
         intakeAlgae.end();
     }

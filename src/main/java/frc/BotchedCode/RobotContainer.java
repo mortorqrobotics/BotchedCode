@@ -129,11 +129,11 @@ public class RobotContainer {
 
 
 
-        controller2.leftBumper().whileTrue(new IntakeAlgaeIn(intakeAlgae)); 
-        controller2.rightBumper().whileTrue(new IntakeAlgaeOut(intakeAlgae));
+        controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae)); 
+        controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae));
 
-        controller2.leftBumper().whileTrue(new IntakeCoralIn(intakeCoral)); 
-        controller2.rightBumper().whileTrue(new IntakeCoralOut(intakeCoral));
+        controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral)); 
+        controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller1.y().whileTrue(new BarbOut(barb));

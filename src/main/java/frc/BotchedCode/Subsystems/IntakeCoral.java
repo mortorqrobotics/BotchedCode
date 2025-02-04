@@ -34,6 +34,14 @@ public class IntakeCoral extends SubsystemBase {
         rightIntakeCoral.set(-RobotMap.RIGHT_INTAKECORAL_SPEED);
     }
 
+    public boolean pickedUp(){
+        return (leftIntakeCoral.getOutputCurrent() > RobotMap.CORAL_INTAKE_CURRENT_PICKUP) && (rightIntakeCoral.getOutputCurrent() > RobotMap.CORAL_INTAKE_CURRENT_PICKUP);
+    }
+
+    public boolean released(){
+        return (leftIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP) && (rightIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP);
+    }
+
     public void end(){
         leftIntakeCoral.set(0);
         rightIntakeCoral.set(0);

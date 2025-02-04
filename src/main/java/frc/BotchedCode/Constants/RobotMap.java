@@ -87,4 +87,8 @@ public class RobotMap {
 
     public static final double MANUAL_ELEVATOR_SPEED = -1; //TODO
 
+
+    public static final double ALGAE_INTAKE_CURRENT_PICKUP = 0; //TODO
+    public static final double CORAL_INTAKE_CURRENT_PICKUP = 0; //TODO
+
 }

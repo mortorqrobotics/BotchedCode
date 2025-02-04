@@ -18,6 +18,11 @@ public class IntakeCoralOut extends Command {
     }
 
     @Override
+    public boolean isFinished(){
+        return intakeCoral.released();
+    }
+
+    @Override
     public void end(boolean interrupted) {
         intakeCoral.end();
     }
