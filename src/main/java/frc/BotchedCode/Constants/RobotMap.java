@@ -30,6 +30,7 @@ public class RobotMap {
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
 
     public static final int ELEVATOR_ID = -1; //TODO
+    public static final int ELEVATOR2_ID = -1; //TODO
     public static final double MANUAL_ELEVATOR_INCREMENTATION = 0; //TODO
     public static final double ELEVATOR_MAX_SPEED = 0; //TODO
     public static final double ELEVATOR_MAX_ACCELERATION = 0; //TODO

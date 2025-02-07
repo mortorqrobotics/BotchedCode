@@ -1,5 +1,6 @@
 package frc.BotchedCode.Subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -12,6 +13,7 @@ import frc.BotchedCode.RobotContainer;
 public class Elevator extends SubsystemBase{
 
     public TalonFX mElevator;
+    public TalonFX mElevator2; 
     private DigitalInput bottomSwitch;
     private ProfiledPIDController heightController;
     private double setpoint;
@@ -20,6 +22,9 @@ public class Elevator extends SubsystemBase{
 
     public Elevator(){
         mElevator = new TalonFX(RobotMap.ELEVATOR_ID, RobotMap.SUBSYSTEM_BUS); //TODO
+        mElevator2 = new TalonFX(RobotMap.ELEVATOR2_ID, RobotMap.SUBSYSTEM_BUS); //TODO
+        mElevator.setControl(new Follower(mElevator2.getDeviceID(), false)); // TODO check mount for inverted motor
+        
         bottomSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH_CHANNEL); //TODO
         heightController = new ProfiledPIDController(RobotMap.ELEVATOR_KP, RobotMap.ELEVATOR_KI, RobotMap.ELEVATOR_KD, new TrapezoidProfile.Constraints(RobotMap.ELEVATOR_MAX_SPEED, RobotMap.ELEVATOR_MAX_ACCELERATION)); //TODO
         setpoint = 0;
@@ -30,6 +35,7 @@ public class Elevator extends SubsystemBase{
     public void up(){
         // mElevator.set(RobotMap.ELEVATOR_SPEED);
         RobotContainer.elevator.setSetpoint(mElevator.getPosition().getValueAsDouble() + RobotMap.MANUAL_ELEVATOR_INCREMENTATION);
+
     }
 
     public void down(){
