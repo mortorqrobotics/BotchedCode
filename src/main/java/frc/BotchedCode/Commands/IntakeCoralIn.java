@@ -5,7 +5,8 @@ import frc.BotchedCode.Subsystems.IntakeCoral;
 
 public class IntakeCoralIn extends Command {
 
-    private int count;
+    private int initialCount;
+    private int pickupCount;
     private final IntakeCoral intakeCoral;
 
     public IntakeCoralIn(IntakeCoral intakeCoral) {
@@ -15,18 +16,25 @@ public class IntakeCoralIn extends Command {
 
     @Override
     public void initialize(){
-        count = 0;
+        initialCount = 0;
+        pickupCount = 0;
     }
 
     @Override
     public void execute() {
-        count ++;
+        initialCount ++;
+        if(intakeCoral.pickedUp() && initialCount > 20){
+            pickupCount++;
+        }
+        else if(pickupCount > 0){
+            pickupCount--;
+        }
         intakeCoral.in();
     }
 
     @Override
     public boolean isFinished(){
-        return intakeCoral.pickedUp() && count < 20;
+        return pickupCount > 20;
     }
 
     @Override

@@ -6,6 +6,7 @@ import frc.BotchedCode.Subsystems.IntakeCoral;
 public class IntakeCoralOut extends Command {
 
     private final IntakeCoral intakeCoral;
+    private int count;
 
     public IntakeCoralOut(IntakeCoral intakeCoral) {
         this.intakeCoral = intakeCoral;
@@ -13,13 +14,21 @@ public class IntakeCoralOut extends Command {
     }
 
     @Override
+    public void initialize(){
+        count = 0;
+    }
+
+    @Override
     public void execute() {
+        if (!intakeCoral.pickedUp()) {
+            count++;
+        }
         intakeCoral.out();
     }
 
     @Override
     public boolean isFinished(){
-        return intakeCoral.released();
+        return count > 20;
     }
 
     @Override

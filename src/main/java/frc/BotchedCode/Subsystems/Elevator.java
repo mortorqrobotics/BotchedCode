@@ -8,7 +8,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
-import frc.BotchedCode.RobotContainer;
 
 public class Elevator extends SubsystemBase{
 
@@ -34,7 +33,7 @@ public class Elevator extends SubsystemBase{
     
     public void up(){
         // mElevator.set(RobotMap.ELEVATOR_SPEED);
-        RobotContainer.elevator.setSetpoint(mElevator.getPosition().getValueAsDouble() + RobotMap.MANUAL_ELEVATOR_INCREMENTATION);
+        setSetpoint(mElevator.getPosition().getValueAsDouble() + RobotMap.MANUAL_ELEVATOR_INCREMENTATION);
 
     }
 

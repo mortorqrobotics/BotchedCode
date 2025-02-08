@@ -5,7 +5,8 @@ import frc.BotchedCode.Subsystems.IntakeAlgae;
 
 public class IntakeAlgaeIn extends Command {
 
-    private int count;
+    private int initialCount;
+    private int pickupCount;
     private final IntakeAlgae intakeAlgae;
 
     public IntakeAlgaeIn(IntakeAlgae intakeAlgae) {
@@ -15,18 +16,25 @@ public class IntakeAlgaeIn extends Command {
 
     @Override
     public void initialize(){
-        count = 0;
+        initialCount = 0;
+        pickupCount = 0;
     }
 
     @Override
     public void execute() {
-        count++;
+        initialCount++;
+        if(intakeAlgae.pickedUp() && initialCount > 20){
+            pickupCount++;
+        }
+        else if(pickupCount > 0){
+            pickupCount--;
+        }
         intakeAlgae.in();
     }
 
     @Override 
     public boolean isFinished(){
-        return intakeAlgae.pickedUp() && count > 20;
+        return pickupCount > 20;
     }
     
 

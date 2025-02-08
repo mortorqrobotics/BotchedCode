@@ -60,27 +60,14 @@ public class RobotMap {
 
 
     public static final int LEFT_INTAKEALGAE_ID = -1; //TODO
-
-
     public static final int RIGHT_INTAKEALGAE_ID = -1; //TODO
-
-
     public static final int LEFT_INTAKEALGAE_SPEED = 0; //TODO
-
-
     public static final int RIGHT_INTAKEALGAE_SPEED = 0; //TODO
 
 
-    public static final int LEFT_INTAKECORAL_ID = 0; //TODO
-
-
-    public static final int RIGHT_INTAKECORAL_ID = 0; //TODO
-
-
-    public static final int LEFT_INTAKECORAL_SPEED = 0; //TODO
-
-
-    public static final double RIGHT_INTAKECORAL_SPEED = 0; //TODO
+    public static final int LEFT_INTAKECORAL_ID = 22; //TODO
+    public static final int RIGHT_INTAKECORAL_ID = 21; //TODO
+    public static final double INTAKECORAL_SPEED = 0.2; //TODO
 
     public static final double BARB_SPEED = 0;//TODO 
     
@@ -90,6 +77,6 @@ public class RobotMap {
 
 
     public static final double ALGAE_INTAKE_CURRENT_PICKUP = 0; //TODO
-    public static final double CORAL_INTAKE_CURRENT_PICKUP = 0; //TODO
+    public static final double CORAL_INTAKE_CURRENT_PICKUP = 30; //TODO
 
 }

@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
 
@@ -25,25 +26,34 @@ public class IntakeCoral extends SubsystemBase {
     }
 
     public void in(){
-        leftIntakeCoral.set(-RobotMap.LEFT_INTAKECORAL_SPEED);
-        rightIntakeCoral.set(RobotMap.RIGHT_INTAKECORAL_SPEED);
+        leftIntakeCoral.set(-RobotMap.INTAKECORAL_SPEED);
+        rightIntakeCoral.set(RobotMap.INTAKECORAL_SPEED);
     }
 
     public void out(){
-        leftIntakeCoral.set(RobotMap.LEFT_INTAKECORAL_SPEED);
-        rightIntakeCoral.set(-RobotMap.RIGHT_INTAKECORAL_SPEED);
+        leftIntakeCoral.set(RobotMap.INTAKECORAL_SPEED);
+        rightIntakeCoral.set(-RobotMap.INTAKECORAL_SPEED);
     }
 
     public boolean pickedUp(){
         return (leftIntakeCoral.getOutputCurrent() > RobotMap.CORAL_INTAKE_CURRENT_PICKUP) && (rightIntakeCoral.getOutputCurrent() > RobotMap.CORAL_INTAKE_CURRENT_PICKUP);
     }
 
-    public boolean released(){
-        return (leftIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP) && (rightIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP);
-    }
+
+    
+    // public boolean released(){
+    //     return (leftIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP) && (rightIntakeCoral.getOutputCurrent() < RobotMap.CORAL_INTAKE_CURRENT_PICKUP/2);
+    // }
 
     public void end(){
         leftIntakeCoral.set(0);
         rightIntakeCoral.set(0);
+    }
+    
+    @Override
+    public void periodic(){
+            SmartDashboard.putNumber("LIntakeDraw", leftIntakeCoral.getOutputCurrent());
+            SmartDashboard.putNumber("RIntakeDraw", rightIntakeCoral.getOutputCurrent());
+            
     }
 }
