@@ -6,19 +6,16 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Utils.LimelightHelpers;
+import frc.BotchedCode.Utils.LimelightHelpers.RawFiducial;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -69,6 +66,14 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
       
+      //strafe to tag
+      RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(RobotMap.LIMELIGHT_NAME);
+      for (RawFiducial fiducial : fiducials) {
+        SmartDashboard.putNumber(fiducial.id + " hypotenuse", fiducial.distToRobot);
+        SmartDashboard.putNumber(fiducial.id + " ground distance", Math.sqrt((Math.pow(fiducial.distToRobot, 2)-Math.pow((RobotMap.TAG_HEIGHTS[fiducial.id-1] - .09), 2))));
+      }
+      
+
       /* 
       if (network.getEntry("tv").getDouble(0) >= 1) {
 
