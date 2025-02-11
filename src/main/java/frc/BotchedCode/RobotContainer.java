@@ -4,8 +4,8 @@
 
 package frc.BotchedCode;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -19,18 +19,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.RotateToTag;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
+import frc.BotchedCode.Constants.TunerConstantsOld;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -43,7 +45,7 @@ public class RobotContainer {
     private final static CommandXboxController joystick = new CommandXboxController(0);
     
     public final CommandSwerveDrivetrain drivetrain = createDrivetrain();
-    public Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
+    public static Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -91,6 +93,9 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        joystick.x().whileTrue(new RotateToTag(drivetrain, 0));
+        
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
     
@@ -115,10 +120,10 @@ public class RobotContainer {
 
     public static CommandSwerveDrivetrain createDrivetrain() {
         return new CommandSwerveDrivetrain(
-            TunerConstants.DrivetrainConstants, 0,
+            TunerConstantsOld.DrivetrainConstants, 0,
             VecBuilder.fill(RobotMap.kPositionStdDevX, RobotMap.kPositionStdDevY, Units.degreesToRadians(RobotMap.kPositionStdDevTheta)),
             VecBuilder.fill(RobotMap.kVisionStdDevX, RobotMap.kVisionStdDevY, Units.degreesToRadians(RobotMap.kVisionStdDevTheta)),
-            TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
+            TunerConstantsOld.FrontLeft, TunerConstantsOld.FrontRight, TunerConstantsOld.BackLeft, TunerConstantsOld.BackRight
         );
     }
 }

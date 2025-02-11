@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+    SmartDashboard.putNumber("Yaw", m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
 
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
