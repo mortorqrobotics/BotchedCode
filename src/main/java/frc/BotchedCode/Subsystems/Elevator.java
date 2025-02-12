@@ -46,6 +46,10 @@ public class Elevator extends SubsystemBase{
         mElevator.set(-RobotMap.MANUAL_ELEVATOR_SPEED);
     }
 
+    public void manualUp(){
+        mElevator.set(RobotMap.MANUAL_ELEVATOR_SPEED);
+    }
+
     public void setSetpoint(double setpoint){
         this.setpoint = setpoint;
     }
