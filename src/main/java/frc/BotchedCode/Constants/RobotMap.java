@@ -42,25 +42,24 @@ public class RobotMap {
     public static final double MANUAL_ELEVATOR_SPEED = .2; //TODO
 
     //Pivot
-    public static final double L2_ANGLE = 0; //TODO
-    public static final double L3_ANGLE = 0; //TODO
-    public static final double L4_ANGLE = 0; //TODO
-    public static final double CORAL_STATION_ANGLE = 0; //TODO
+    public static final double L23_ANGLE = 0.56; //TODO
+    public static final double L4_ANGLE = 0.42; //TODO
+    public static final double CORAL_STATION_ANGLE = 0.77; //TODO
 
-    public static final int PIVOT_ID = 0; //TODO
-    public static final int PIVOT_CANCODER_ID = 0; //TODO
-    public static final double MANUAL_PIVOT_INCREMENTATION = 0; //TODO
-    public static final double PIVOT_MAX_SPEED = 0; //TODO
-    public static final double PIVOT_MAX_ACCELERATION = 0; //TODO
-    public static final double PIVOT_KP = 0; //TODO
+    public static final int PIVOT_ID = 15; //TODO
+    public static final int PIVOT_CANCODER_ID = 16; //TODO
+    public static final double MANUAL_PIVOT_INCREMENTATION = .005; //TODO  .005
+    public static final double PIVOT_MAX_SPEED = 0.2; //TODO  .2
+    public static final double PIVOT_MAX_ACCELERATION = 1; //TODO 1
+    public static final double PIVOT_KP = 0.1; //TODO .2
     public static final double PIVOT_KI = 0; //TODO
     public static final double PIVOT_KD = 0; //TODO
-    public static final double PIVOT_LOWER_LIMIT = 0; //TODO
-    public static final double PIVOT_UPPER_LIMIT = 0; //TODO
+    public static final double PIVOT_LOWER_LIMIT = 0.38; //TODO
+    public static final double PIVOT_UPPER_LIMIT = 0.80; //TODO
 
 
-    public static final int LEFT_INTAKEALGAE_ID = 13; //TODO
-    public static final int RIGHT_INTAKEALGAE_ID = 14; //TODO
+    public static final int LEFT_INTAKEALGAE_ID = -1; //TODO
+    public static final int RIGHT_INTAKEALGAE_ID = -1; //TODO
     public static final double  LEFT_INTAKEALGAE_SPEED = .25; //TODO
     public static final double  RIGHT_INTAKEALGAE_SPEED = -.25; //TODO
 
@@ -73,7 +72,6 @@ public class RobotMap {
     
     public static final int BARB_ID = -1;//TODO 
 
-    
 
 
     public static final double ALGAE_INTAKE_CURRENT_PICKUP = 10; //TODO

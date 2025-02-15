@@ -14,7 +14,7 @@ public class ManualPivotDown extends Command {
 
     @Override
     public void execute() {
-        pivot.up();
+        pivot.down();
     }
 
     @Override

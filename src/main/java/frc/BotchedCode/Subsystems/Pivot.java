@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
 
@@ -23,24 +24,31 @@ public class Pivot extends SubsystemBase{
         canCoder = new CANcoder(RobotMap.PIVOT_CANCODER_ID);
         canCoder.clearStickyFault_BadMagnet();
         canCoder.getConfigurator().apply(new CANcoderConfiguration());
-        wrapping = false;
+        wrapping = true;
 
         angleController = new ProfiledPIDController(RobotMap.PIVOT_KP, RobotMap.PIVOT_KI, RobotMap.PIVOT_KD, new TrapezoidProfile.Constraints(RobotMap.PIVOT_MAX_SPEED, RobotMap.PIVOT_MAX_ACCELERATION)); //TODO
-        setpoint = 0;
+        setpoint = getCANCoderValue();
     }
     
     public void up(){
         // mpivot.set(RobotMap.pivot_SPEED);
-        setSetpoint(getCANCoderValue() + RobotMap.MANUAL_PIVOT_INCREMENTATION);
+        setSetpoint(getSetpoint() + RobotMap.MANUAL_PIVOT_INCREMENTATION);
+        // mpivot.set(-RobotMap.PIVOT_MAX_SPEED);
     }
 
     public void down(){
         // mpivot.set(-RobotMap.pivot_SPEED);
-        setSetpoint(getCANCoderValue() - RobotMap.MANUAL_PIVOT_INCREMENTATION);
+        setSetpoint(getSetpoint() - RobotMap.MANUAL_PIVOT_INCREMENTATION);
+        // mpivot.set(RobotMap.PIVOT_MAX_SPEED);
+
     }
 
     public void setSetpoint(double setpoint){
         this.setpoint = setpoint;
+    }
+
+    public double getSetpoint(){
+        return setpoint;
     }
 
     public double getCANCoderValue(){
@@ -48,7 +56,7 @@ public class Pivot extends SubsystemBase{
         
         if (wrapping){
             if (canCoder.getAbsolutePosition().getValueAsDouble() < 0){
-                return 2+canCoder.getAbsolutePosition().getValueAsDouble();
+                return canCoder.getAbsolutePosition().getValueAsDouble()+1;
             }
             else{
                 return canCoder.getAbsolutePosition().getValueAsDouble();
@@ -74,12 +82,13 @@ public class Pivot extends SubsystemBase{
 
     @Override
     public void periodic(){
+        SmartDashboard.putNumber("Pivot Angle", getCANCoderValue());
         double speed = angleController.calculate(getCANCoderValue(), setpoint);
-        if((reachedLowerLimit() && speed < 0) || (reachedUpperLimit() && speed > 0)){
-            mpivot.set(0);
-        }
-        else{
-            mpivot.set(speed);
-        }
+        // if((reachedLowerLimit() && speed < 0) || (reachedUpperLimit() && speed > 0)){
+        //     mpivot.set(0);
+        // }
+        // else{
+            mpivot.set(-speed);
+        // }
     }
 }
