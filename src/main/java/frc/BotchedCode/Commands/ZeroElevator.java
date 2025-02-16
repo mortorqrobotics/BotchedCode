@@ -14,7 +14,7 @@ public class ZeroElevator extends Command {
 
     @Override
     public void execute() {
-        elevator.manualDown();
+        elevator.down();
     }
 
     @Override
