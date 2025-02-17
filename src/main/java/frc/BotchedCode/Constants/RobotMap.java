@@ -1,5 +1,8 @@
 package frc.BotchedCode.Constants;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+
 public class RobotMap {
     //Limelight 
     // Increase these numbers to trust your model's state estimates less.
@@ -24,10 +27,8 @@ public class RobotMap {
     1.30175, /*ID: 16*/
     0.308102, 0.308102, 0.308102, 0.308102, 0.308102, 0.308102 /*ID: 17 - 22*/};
 
-    public static final double ALIGN_ANGLE_LIMIT = 1; //TODO
-    public static final double ALIGN_ANGLE_KP = 10; //TODO
-    public static final double ALIGN_ANGLE_KI = 0; //TODO
-    public static final double ALIGN_ANGLE_KD = 0; //TODO
+    public static final AprilTagFieldLayout ANDYMARK_FIELD2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    public static final AprilTagFieldLayout WELDED_FIELD2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     //Gyro
     public static final int PIGEON_ID = 30;
