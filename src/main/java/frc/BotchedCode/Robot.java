@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Utils.LimelightHelpers;
-import frc.BotchedCode.Utils.LimelightHelpers.RawFiducial;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -44,6 +43,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
     SmartDashboard.putNumber("Yaw", m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
 
+    //SmartDashboard.putNumber("FloorDist", RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getZ()/Math.tan(Units.degreesToRadians(LimelightHelpers.getTY(RobotMap.LIMELIGHT_NAME) + 30)));
+
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
      * Users typically need to provide a standard deviation that scales with the distance to target
@@ -68,11 +69,11 @@ public class Robot extends TimedRobot {
       }
       
       //strafe to tag
-      RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(RobotMap.LIMELIGHT_NAME);
-      for (RawFiducial fiducial : fiducials) {
-        SmartDashboard.putNumber(fiducial.id + " hypotenuse", fiducial.distToRobot);
-        SmartDashboard.putNumber(fiducial.id + " ground distance", Math.sqrt((Math.pow(fiducial.distToRobot, 2)-Math.pow((RobotMap.TAG_HEIGHTS[fiducial.id-1] - .09), 2))));
-      }
+      // RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(RobotMap.LIMELIGHT_NAME);
+      // for (RawFiducial fiducial : fiducials) {
+      //   SmartDashboard.putNumber(fiducial.id + " hypotenuse", fiducial.distToRobot);
+      //   SmartDashboard.putNumber(fiducial.id + " ground distance", Math.sqrt((Math.pow(fiducial.distToRobot, 2)-Math.pow((RobotMap.TAG_HEIGHTS[fiducial.id-1] - .09), 2))));
+      // }
       
 
       /* 

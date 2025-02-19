@@ -1,9 +1,7 @@
 package frc.BotchedCode.Commands;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.RobotContainer;
@@ -22,10 +20,7 @@ public class StrafeToTag extends Command {
     private double angleOffset; 
     private double xOffset; 
     private double yOffset; 
-
-    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(RobotContainer.MaxSpeed * 0.1).withRotationalDeadband(RobotContainer.MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
+    private double tagHeight;
     
 
     /**
@@ -47,12 +42,12 @@ public class StrafeToTag extends Command {
 
         xController = new PIDController(1, 0, 0);
         // TODO tune PID and tolerance
-        xController.setTolerance(0.05);
+        xController.setTolerance(0.01);
         xController.setSetpoint(xSetpoint);
 
-        yController = new PIDController(1, 0, 0);
+        yController = new PIDController(0.01, 0, 0);
         // TODO tune PID and tolerance
-        yController.setTolerance(0.05);
+        yController.setTolerance(0.01);
         yController.setSetpoint(ySetpoint);
 
         addRequirements(drivetrainSubsystem);
@@ -61,23 +56,28 @@ public class StrafeToTag extends Command {
     @Override
     public void initialize(){
         angleSetpoint = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getRotation().getAngle() + angleOffset;
-        xSetpoint = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getX() + xOffset;
-        ySetpoint = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getRotation().getAngle() + yOffset;
-        
+        // xSetpoint = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getX() + xOffset;
+        // ySetpoint = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getRotation().getAngle() + yOffset;
+        tagHeight = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getZ();
+        // System.out.println("XTag: " + xSetpoint + "   YTag: " + ySetpoint);
+        // System.out.println("XPose: " + drivetrainSubsystem.getState().Pose.getX() + "   YPose: " + drivetrainSubsystem.getState().Pose.getY() + "\n");
     }
 
     @Override
     public void execute() {
         // System.out.print("angle: " + drivetrainSubsystem.getState().Pose.getRotation().getRadians());
-        double rotation = (angleController.calculate(drivetrainSubsystem.getState().Pose.getRotation().getRadians(), angleSetpoint));
-        // System.out.println( "   rot: " + rotation);
-        double xDist = (xController.calculate(drivetrainSubsystem.getState().Pose.getX(), xSetpoint));
-        double yDist = (yController.calculate(drivetrainSubsystem.getState().Pose.getY(), ySetpoint));
+        double rotation = angleController.calculate(drivetrainSubsystem.getState().Pose.getRotation().getRadians(), angleSetpoint);
+        double floorDist = tagHeight/Math.tan(Units.degreesToRadians(LimelightHelpers.getTY(RobotMap.LIMELIGHT_NAME) + 30));
+        double tx = LimelightHelpers.getTX(RobotMap.LIMELIGHT_NAME);
+        //System.out.println("FloorDist: " + floorDist + "   TX: " + tx);
+        // System.out.println("   rot: " + rotation);
+        double xSpeed = xController.calculate(floorDist, xOffset);
+        double ySpeed = yController.calculate(tx, 0);
                 
         drivetrainSubsystem.setControl(
-            drive.withVelocityX(xDist) // Drive forward with negative Y (forward)
-            .withVelocityY(yDist) // Drive left with negative X (left)
-            .withRotationalRate(rotation)
+            RobotContainer.drive.withVelocityX(xSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(ySpeed) // Drive left with negative X (left)
+            .withRotationalRate(0)
         ); // Drive counterclockwise with negative X (left)
     }
 
