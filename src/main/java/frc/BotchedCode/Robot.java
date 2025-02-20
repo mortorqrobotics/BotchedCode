@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
     SmartDashboard.putNumber("Yaw", m_robotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
 
-    //SmartDashboard.putNumber("FloorDist", RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getZ()/Math.tan(Units.degreesToRadians(LimelightHelpers.getTY(RobotMap.LIMELIGHT_NAME) + 30)));
+    //SmartDashboard.putNumber("Angle", Units.radiansToDegrees(RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get().getRotation().getAngle()));
 
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
