@@ -18,7 +18,9 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.RotateToTag;
 import frc.BotchedCode.Commands.StrafeToTag;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
@@ -92,7 +94,7 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        joystick.x().onTrue(new StrafeToTag(drivetrain, Math.PI, 0.5, 0));
+        joystick.x().onTrue(Commands.sequence(new RotateToTag(drivetrain, 0), new StrafeToTag(drivetrain, 0.5)));
 
         //joystick.x().whileTrue(new RotateToTag(drivetrain, 0));
         
