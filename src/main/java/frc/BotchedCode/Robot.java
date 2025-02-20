@@ -4,6 +4,9 @@
 
 package frc.BotchedCode;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.util.Units;
@@ -24,6 +27,8 @@ public class Robot extends TimedRobot {
   private final boolean kUseLimelight = true;
 
   private static NetworkTable network = NetworkTableInstance.getDefault().getTable("limelight");
+
+  private CANdle candle = new CANdle(0, "1515Canivore");
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -122,6 +127,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    CANdleConfiguration config = new CANdleConfiguration();
+    config.statusLedOffWhenActive = true;
+    config.stripType = LEDStripType.GRB;
+    config.v5Enabled = true;
+    config.vBatOutputMode = CANdle.VBatOutputMode.Modulated;
+    config.brightnessScalar = 1;
+    candle.configAllSettings(config, 100);
+    candle.configLEDType(LEDStripType.GRB); //just added this after cd post
+    candle.setLEDs(250, 0, 0, 100, 0, 10);
   }
 
   @Override
