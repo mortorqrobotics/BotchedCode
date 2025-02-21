@@ -1,17 +1,17 @@
-package frc.BotchedCode.Commands;
+package frc.BotchedCode.Commands.Intakes;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.BotchedCode.Subsystems.IntakeAlgae;
+import frc.BotchedCode.Subsystems.IntakeCoral;
 
-public class IntakeAlgaeIn extends Command {
+public class IntakeCoralIn extends Command {
 
     private int initialCount;
     private int pickupCount;
-    private final IntakeAlgae intakeAlgae;
+    private final IntakeCoral intakeCoral;
 
-    public IntakeAlgaeIn(IntakeAlgae intakeAlgae) {
-        this.intakeAlgae = intakeAlgae;
-        addRequirements(intakeAlgae);
+    public IntakeCoralIn(IntakeCoral intakeCoral) {
+        this.intakeCoral = intakeCoral;
+        addRequirements(intakeCoral);
     }
 
     @Override
@@ -22,24 +22,23 @@ public class IntakeAlgaeIn extends Command {
 
     @Override
     public void execute() {
-        initialCount++;
-        if(intakeAlgae.pickedUp() && initialCount > 20){
+        initialCount ++;
+        if(intakeCoral.pickedUp() && initialCount > 20){
             pickupCount++;
         }
         else if(pickupCount > 0){
             pickupCount--;
         }
-        intakeAlgae.in();
+        intakeCoral.in();
     }
 
-    @Override 
+    @Override
     public boolean isFinished(){
         return pickupCount > 20;
     }
-    
 
     @Override
     public void end(boolean interrupted) {
-        intakeAlgae.end();
+        intakeCoral.end();
     }
 }

@@ -1,4 +1,4 @@
-package frc.BotchedCode.Commands;
+package frc.BotchedCode.Commands.Intakes;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Subsystems.IntakeAlgae;

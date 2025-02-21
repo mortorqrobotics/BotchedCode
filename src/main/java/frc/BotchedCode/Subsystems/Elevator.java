@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase{
     public Elevator(){
         mElevator = new TalonFX(RobotMap.ELEVATOR_ID, RobotMap.SUBSYSTEM_BUS); //TODO
         mElevator2 = new TalonFX(RobotMap.ELEVATOR2_ID, RobotMap.SUBSYSTEM_BUS); //TODO
-        mElevator.setControl(new Follower(mElevator2.getDeviceID(), false)); // TODO check mount for inverted motor
+        mElevator.setControl(new Follower(mElevator2.getDeviceID(), true)); // TODO check mount for inverted motor
 
         var talonFXConfigs = new TalonFXConfiguration();
         //talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -32,8 +32,8 @@ public class Elevator extends SubsystemBase{
         slot0Configs.kD = 0; // no output for error derivative
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 200; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 400; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0.5; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 1; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         mElevator.getConfigurator().apply(talonFXConfigs);
