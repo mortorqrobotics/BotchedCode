@@ -32,6 +32,14 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+    // @Override
+  // public void robotInit(){
+  //   UsbCamera camera = CameraServer.startAutomaticCapture();
+  //   camera.setResolution(640, 360);
+  //   camera.setFPS(10);
+  //   camera.setPixelFormat(PixelFormat.kMJPEG);
+  // }
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
