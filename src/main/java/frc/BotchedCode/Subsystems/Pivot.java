@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,16 +17,16 @@ public class Pivot extends SubsystemBase{
     private double setpoint;
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0.0);
     boolean encoderZeroed;
+    boolean wrapping = false;
 
     public Pivot(){
         mpivot = new TalonFX(RobotMap.PIVOT_ID, RobotMap.SUBSYSTEM_BUS); //TODO
         mCANcoder = new CANcoder(RobotMap.PIVOT_CANCODER_ID, RobotMap.SUBSYSTEM_BUS);
 
-
         var talonFXConfigs = new TalonFXConfiguration();
 
-        talonFXConfigs.Feedback.FeedbackRemoteSensorID = mCANcoder.getDeviceID();
-        talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        // talonFXConfigs.Feedback.FeedbackRemoteSensorID = mCANcoder.getDeviceID();
+        // talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
         talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         var slot0Configs = talonFXConfigs.Slot0;
@@ -36,13 +35,15 @@ public class Pivot extends SubsystemBase{
         slot0Configs.kD = 0; // no output for error derivative
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 200; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 400; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 2; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 4; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         mpivot.getConfigurator().apply(talonFXConfigs);
 
-        encoderZeroed = false;
+        encoderZeroed = true;
+
+        resetEncoder();
 
         setpoint = getPosition();
     }
@@ -83,6 +84,18 @@ public class Pivot extends SubsystemBase{
         encoderZeroed = true;
         mpivot.setPosition(-1);
         setSetpoint(0);
+    }
+
+    public double getCANCoderValue(){
+        double position = mCANcoder.getAbsolutePosition().getValueAsDouble();
+        if (position<0 && wrapping){
+            return position+1;
+        }
+        return position;
+    }
+
+    public void resetEncoder(){
+        mpivot.setPosition(1*getCANCoderValue()+0);
     }
 
     @Override
