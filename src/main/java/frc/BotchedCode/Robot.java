@@ -9,6 +9,8 @@ import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +31,14 @@ public class Robot extends TimedRobot {
   public Robot() {
     m_robotContainer = new RobotContainer();
   }
+
+    // @Override
+  // public void robotInit(){
+  //   UsbCamera camera = CameraServer.startAutomaticCapture();
+  //   camera.setResolution(640, 360);
+  //   camera.setFPS(10);
+  //   camera.setPixelFormat(PixelFormat.kMJPEG);
+  // }
 
   @Override
   public void robotPeriodic() {
