@@ -2,7 +2,9 @@ package frc.BotchedCode.Subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,14 +14,21 @@ import frc.BotchedCode.Constants.RobotMap;
 public class Pivot extends SubsystemBase{
 
     public TalonFX mpivot;
+    public CANcoder mCANcoder;
     private double setpoint;
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0.0);
     boolean encoderZeroed;
 
     public Pivot(){
         mpivot = new TalonFX(RobotMap.PIVOT_ID, RobotMap.SUBSYSTEM_BUS); //TODO
+        mCANcoder = new CANcoder(RobotMap.PIVOT_CANCODER_ID, RobotMap.SUBSYSTEM_BUS);
+
 
         var talonFXConfigs = new TalonFXConfiguration();
+
+        talonFXConfigs.Feedback.FeedbackRemoteSensorID = mCANcoder.getDeviceID();
+        talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+
         talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         var slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.kP = 10; // An error of 1 rps results in 0.11 V output
@@ -79,6 +88,7 @@ public class Pivot extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Pivot Angle", getPosition());
+        SmartDashboard.putNumber("Pivot Cancoder Angle", mCANcoder.getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Current", Math.abs(mpivot.getStatorCurrent().getValueAsDouble()));
         if (encoderZeroed){
             mpivot.setControl(m_request.withPosition(setpoint));
