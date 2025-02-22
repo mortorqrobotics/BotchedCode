@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
     config.brightnessScalar = 1;
     candle.configAllSettings(config, 100);
     candle.configLEDType(LEDStripType.GRB); //just added this after cd post
-    candle.setLEDs(250, 0, 0, 100, 0, 10);
+    candle.setLEDs(0, 0, 250, 100, 0, 10);
   }
 
   @Override
