@@ -5,8 +5,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 
 public class RobotMap {
 
-    public static final String SUBSYSTEM_BUS = "";
-
 
     //Limelight 
     // Increase these numbers to trust your model's state estimates less.
@@ -49,7 +47,7 @@ public class RobotMap {
     public static final double MANUAL_ELEVATOR_INCREMENTATION = 0; //TODO
     public static final double ELEVATOR_UPPER_LIMIT = 0; //TODO
     public static final int ELEVATOR_LIMIT_SWITCH_CHANNEL = -1; //TODO
-    public static final double ELEVATOR_SPEED = .2; //TODO
+    public static final double ELEVATOR_SPEED = 0.1; //TODO
 
     //Pivot
     public static final double L23_ANGLE = 0.56; //TODO
@@ -71,7 +69,7 @@ public class RobotMap {
 
     public static final int LEFT_INTAKECORAL_ID = -1; //TODO
     public static final int RIGHT_INTAKECORAL_ID = -1; //TODO
-    public static final double INTAKECORAL_SPEED = 0.2; //TODO
+    public static final double INTAKECORAL_SPEED = 0.1;//TODO
 
 
     public static final double BARB_SPEED = 0;//TODO 

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
 
@@ -20,32 +21,34 @@ public class Elevator extends SubsystemBase{
 
 
     public Elevator(){
-        mElevator = new TalonFX(RobotMap.ELEVATOR_ID, RobotMap.SUBSYSTEM_BUS); //TODO
-        mElevator2 = new TalonFX(RobotMap.ELEVATOR2_ID, RobotMap.SUBSYSTEM_BUS); //TODO
-        mElevator.setControl(new Follower(mElevator2.getDeviceID(), true)); // TODO check mount for inverted motor
+        mElevator = new TalonFX(RobotMap.ELEVATOR_ID, "1515Canivore"); //TODO
+        mElevator2 = new TalonFX(RobotMap.ELEVATOR2_ID, "1515Canivore"); //TODO
+        mElevator2.setControl(new Follower(mElevator.getDeviceID(), false)); // TODO check mount for inverted motor
 
         var talonFXConfigs = new TalonFXConfiguration();
         //talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         var slot0Configs = talonFXConfigs.Slot0;
-        slot0Configs.kP = 10; // An error of 1 rps results in 0.11 V output
+        slot0Configs.kP = 20; // An error of 1 rps results in 0.11 V output
         slot0Configs.kI = 0; // no output for integrated error
         slot0Configs.kD = 0; // no output for error derivative
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0.5; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 1; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 30; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 60; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         mElevator.getConfigurator().apply(talonFXConfigs);
         
-        bottomSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH_CHANNEL); //TODO
+        //bottomSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH_CHANNEL); //TODO
         setpoint = 0;
         encoderZeroed = false;
+        zeroEncoder(); //TODO
         
     }
     
     public void up(){
         mElevator.set(RobotMap.ELEVATOR_SPEED);
+        //mElevator2.set(RobotMap.ELEVATOR_SPEED);
     }
 
     public void down(){
@@ -63,7 +66,8 @@ public class Elevator extends SubsystemBase{
     }
 
     public boolean reachedLowerLimit(){ 
-        return !bottomSwitch.get();
+        //return !bottomSwitch.get();
+        return true;
     }
 
     public boolean reachedUpperLimit(){
@@ -72,9 +76,13 @@ public class Elevator extends SubsystemBase{
 
     public void end(){
         mElevator.set(0);
+        //mElevator2.set(0);
     }
     @Override
     public void periodic(){
+        SmartDashboard.putNumber("Elevator encoder", mElevator.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator follower current", mElevator2.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator leader current", mElevator.getStatorCurrent().getValueAsDouble());
         if(encoderZeroed){
             mElevator.setControl(m_request.withPosition(setpoint));
         }

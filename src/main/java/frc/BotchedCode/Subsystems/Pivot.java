@@ -20,8 +20,8 @@ public class Pivot extends SubsystemBase{
     boolean wrapping = false;
 
     public Pivot(){
-        mpivot = new TalonFX(RobotMap.PIVOT_ID, RobotMap.SUBSYSTEM_BUS); //TODO
-        mCANcoder = new CANcoder(RobotMap.PIVOT_CANCODER_ID, RobotMap.SUBSYSTEM_BUS);
+        mpivot = new TalonFX(RobotMap.PIVOT_ID); //TODO
+        mCANcoder = new CANcoder(RobotMap.PIVOT_CANCODER_ID);
 
         var talonFXConfigs = new TalonFXConfiguration();
 
