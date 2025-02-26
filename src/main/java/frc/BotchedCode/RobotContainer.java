@@ -4,6 +4,9 @@
 
 package frc.BotchedCode;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -52,6 +55,8 @@ public class RobotContainer {
 
     public static Barb barb;
 
+    private CANdle candle;
+
     private static double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -91,7 +96,17 @@ public class RobotContainer {
         intakeCoral = new IntakeCoral();
 
         barb = new Barb();
+
+        candle = new CANdle(0);
         
+        CANdleConfiguration config = new CANdleConfiguration();
+        config.statusLedOffWhenActive = true;
+        config.stripType = LEDStripType.GRB;
+        config.v5Enabled = true;
+        config.vBatOutputMode = CANdle.VBatOutputMode.Modulated;
+        config.brightnessScalar = 1;
+        candle.configAllSettings(config, 100);
+        candle.configLEDType(LEDStripType.GRB); //just added this after cd post
 
         configureBindings();
     }
@@ -130,11 +145,11 @@ public class RobotContainer {
 
 
 
-        controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae)); 
-        controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae));
+        controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae, candle)); 
+        controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae, candle));
 
-        controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral)); 
-        controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral));
+        controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral, candle)); 
+        controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral, candle));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller1.y().whileTrue(new BarbOut(barb));

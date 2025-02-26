@@ -1,15 +1,19 @@
 package frc.BotchedCode.Commands.Intakes;
 
+import com.ctre.phoenix.led.CANdle;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Subsystems.IntakeAlgae;
 
 public class IntakeAlgaeOut extends Command {
 
-    private final IntakeAlgae intakeAlgae;
+    private IntakeAlgae intakeAlgae;
     private int count;
+    private CANdle candle;
 
-    public IntakeAlgaeOut(IntakeAlgae intakeAlgae) {
+    public IntakeAlgaeOut(IntakeAlgae intakeAlgae, CANdle candle) {
         this.intakeAlgae = intakeAlgae;
+        this.candle = candle;
         addRequirements(intakeAlgae);
     }
 
@@ -34,5 +38,6 @@ public class IntakeAlgaeOut extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeAlgae.end();
+        candle.setLEDs(0,0,0,0,0,10);
     }
 }

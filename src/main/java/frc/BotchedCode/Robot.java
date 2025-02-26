@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
 
   private final boolean kUseLimelight = true;
 
-  private CANdle candle = new CANdle(0, "1515Canivore");
-
   public Robot() {
     m_robotContainer = new RobotContainer();
   }
@@ -97,16 +95,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
-    CANdleConfiguration config = new CANdleConfiguration();
-    config.statusLedOffWhenActive = true;
-    config.stripType = LEDStripType.GRB;
-    config.v5Enabled = true;
-    config.vBatOutputMode = CANdle.VBatOutputMode.Modulated;
-    config.brightnessScalar = 1;
-    candle.configAllSettings(config, 100);
-    candle.configLEDType(LEDStripType.GRB); //just added this after cd post
-    candle.setLEDs(0, 0, 250, 100, 0, 10);
   }
 
   @Override
