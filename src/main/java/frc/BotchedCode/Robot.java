@@ -4,13 +4,8 @@
 
 package frc.BotchedCode;
 
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

@@ -129,8 +129,6 @@ public class RobotContainer {
         controller1.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
         ));
-
-        controller1.a().onTrue(new InstantCommand(()->candle.setLEDs(255, 0, 0, 100, 0, 10)));
         
         controller1.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -213,10 +211,10 @@ public class RobotContainer {
 
     public static CommandSwerveDrivetrain createDrivetrain() {
         return new CommandSwerveDrivetrain(
-            TunerConstantsOld.DrivetrainConstants, 0,
+            TunerConstants.DrivetrainConstants, 0,
             VecBuilder.fill(RobotMap.kPositionStdDevX, RobotMap.kPositionStdDevY, Units.degreesToRadians(RobotMap.kPositionStdDevTheta)),
             VecBuilder.fill(RobotMap.kVisionStdDevX, RobotMap.kVisionStdDevY, Units.degreesToRadians(RobotMap.kVisionStdDevTheta)),
-            TunerConstantsOld.FrontLeft, TunerConstantsOld.FrontRight, TunerConstantsOld.BackLeft, TunerConstantsOld.BackRight
+            TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
         );
     }
 }
