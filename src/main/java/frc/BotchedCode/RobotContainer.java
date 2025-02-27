@@ -4,9 +4,6 @@
 
 package frc.BotchedCode;
 
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -18,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,8 +33,8 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
-import frc.BotchedCode.Constants.TunerConstantsOld;
 import frc.BotchedCode.Subsystems.Barb;
+import frc.BotchedCode.Subsystems.Candle;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Subsystems.Elevator;
 import frc.BotchedCode.Subsystems.IntakeAlgae;
@@ -56,7 +54,7 @@ public class RobotContainer {
 
     public static Barb barb;
 
-    private CANdle candle;
+    public static Candle candle;
 
     private static double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -98,17 +96,7 @@ public class RobotContainer {
 
         barb = new Barb();
 
-        candle = new CANdle(0);
-        
-        CANdleConfiguration config = new CANdleConfiguration();
-        config.statusLedOffWhenActive = true;
-        config.stripType = LEDStripType.GRB;
-        config.v5Enabled = true;
-        config.vBatOutputMode = CANdle.VBatOutputMode.Modulated;
-        config.brightnessScalar = 1;
-        candle.configAllSettings(config, 100);
-        candle.configLEDType(LEDStripType.GRB); //just added this after cd post
-        candle.setLEDs(0, 0, 0);
+        candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
 
         configureBindings();
     }
@@ -157,22 +145,22 @@ public class RobotContainer {
         controller2.leftBumper().onTrue(
             Commands.sequence(
                 new IntakeAlgaeIn(intakeAlgae),
-                intakeAlgae.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 255, 0, 19, 10)) : new InstantCommand()
+                new InstantCommand(()->candle.algaeOn())
             )); 
         controller2.rightBumper().onTrue(
             Commands.sequence(
                 new IntakeAlgaeOut(intakeAlgae),
-                !intakeAlgae.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 0, 0, 19, 10)) : new InstantCommand()
+                new InstantCommand(()->candle.algaeOff())
         ));
         controller2.leftBumper().onTrue(
             Commands.sequence(
                 new IntakeCoralIn(intakeCoral),
-                intakeCoral.getLeds() ? new InstantCommand(()->candle.setLEDs(255, 0, 0, 0, 8, 10)) : new InstantCommand()
+                new InstantCommand(()->candle.coralOn())
         ));
         controller2.rightBumper().onTrue(
             Commands.sequence(
                 new IntakeCoralOut(intakeCoral),
-                !intakeCoral.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 0, 0, 8, 10)) : new InstantCommand()
+                new InstantCommand(()->candle.coralOff())
         ));
 
         controller1.x().whileTrue(new BarbIn(barb));

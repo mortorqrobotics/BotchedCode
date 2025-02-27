@@ -79,5 +79,7 @@ public class RobotMap {
     public static final double ALGAE_INTAKE_CURRENT_PICKUP = 10; //TODO
     public static final double CORAL_INTAKE_CURRENT_PICKUP = 30; //TODO
     public static final double PIVOT_CURRENT_LIMIT = 3; //TODO
+    
+    public static final int CANDLE_ID = 0;
 
 }
