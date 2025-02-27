@@ -14,11 +14,13 @@ public class IntakeCoral extends SubsystemBase {
     
     private final SparkMax leftIntakeCoral;
     private final SparkMax rightIntakeCoral;
+    private boolean leds;
 
 
     public IntakeCoral(){
         leftIntakeCoral = new SparkMax(RobotMap.LEFT_INTAKECORAL_ID, MotorType.kBrushless);
         rightIntakeCoral = new SparkMax(RobotMap.RIGHT_INTAKECORAL_ID, MotorType.kBrushless);
+        leds = false;
         
         leftIntakeCoral.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         leftIntakeCoral.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
@@ -48,6 +50,18 @@ public class IntakeCoral extends SubsystemBase {
     public void end(){
         leftIntakeCoral.set(0);
         rightIntakeCoral.set(0);
+    }
+
+    public void ledsOff(){
+        leds = false;
+    }
+
+    public void ledsOn(){
+        leds = true;
+    }
+
+    public boolean getLeds(){
+        return leds;
     }
     
     @Override

@@ -1,7 +1,5 @@
 package frc.BotchedCode.Commands.Intakes;
 
-import com.ctre.phoenix.led.CANdle;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Subsystems.IntakeCoral;
 
@@ -9,11 +7,9 @@ public class IntakeCoralOut extends Command {
 
     private IntakeCoral intakeCoral;
     private int count;
-    private CANdle candle;
 
-    public IntakeCoralOut(IntakeCoral intakeCoral, CANdle candle) {
+    public IntakeCoralOut(IntakeCoral intakeCoral) {
         this.intakeCoral = intakeCoral;
-        this.candle = candle;
         addRequirements(intakeCoral);
     }
 
@@ -38,6 +34,6 @@ public class IntakeCoralOut extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeCoral.end();
-        candle.setLEDs(0,0,0,0,0,10);
+        intakeCoral.ledsOff();
     }
 }

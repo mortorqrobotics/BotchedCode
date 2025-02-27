@@ -21,6 +21,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -107,6 +108,7 @@ public class RobotContainer {
         config.brightnessScalar = 1;
         candle.configAllSettings(config, 100);
         candle.configLEDType(LEDStripType.GRB); //just added this after cd post
+        candle.setLEDs(0, 0, 0);
 
         configureBindings();
     }
@@ -144,12 +146,34 @@ public class RobotContainer {
         controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))));
 
 
+        //Controls for intakes without candle
+        // controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae)); 
+        // controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae));
 
-        controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae, candle)); 
-        controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae, candle));
+        // controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral)); 
+        // controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral));
 
-        controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral, candle)); 
-        controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral, candle));
+        //Controls with candle
+        controller2.leftBumper().onTrue(
+            Commands.sequence(
+                new IntakeAlgaeIn(intakeAlgae),
+                intakeAlgae.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 255, 0, 19, 10)) : new InstantCommand()
+            )); 
+        controller2.rightBumper().onTrue(
+            Commands.sequence(
+                new IntakeAlgaeOut(intakeAlgae),
+                !intakeAlgae.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 0, 0, 19, 10)) : new InstantCommand()
+        ));
+        controller2.leftBumper().onTrue(
+            Commands.sequence(
+                new IntakeCoralIn(intakeCoral),
+                intakeCoral.getLeds() ? new InstantCommand(()->candle.setLEDs(255, 0, 0, 0, 8, 10)) : new InstantCommand()
+        ));
+        controller2.rightBumper().onTrue(
+            Commands.sequence(
+                new IntakeCoralOut(intakeCoral),
+                !intakeCoral.getLeds() ? new InstantCommand(()->candle.setLEDs(0, 0, 0, 0, 8, 10)) : new InstantCommand()
+        ));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller1.y().whileTrue(new BarbOut(barb));

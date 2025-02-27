@@ -13,11 +13,13 @@ public class IntakeAlgae extends SubsystemBase {
     
     private final SparkMax leftIntakeAlgae;
     private final SparkMax rightIntakeAlgae;
+    private boolean leds;
 
 
     public IntakeAlgae(){
         leftIntakeAlgae = new SparkMax(RobotMap.LEFT_INTAKEALGAE_ID, MotorType.kBrushless);
         rightIntakeAlgae = new SparkMax(RobotMap.RIGHT_INTAKEALGAE_ID, MotorType.kBrushless);
+        leds = false;
         
         leftIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         leftIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
@@ -40,6 +42,18 @@ public class IntakeAlgae extends SubsystemBase {
 
     public boolean released(){
         return (leftIntakeAlgae.getOutputCurrent() < RobotMap.ALGAE_INTAKE_CURRENT_PICKUP) && (rightIntakeAlgae.getOutputCurrent() < RobotMap.ALGAE_INTAKE_CURRENT_PICKUP);
+    }
+
+    public void ledsOff(){
+        leds = false;
+    }
+
+    public void ledsOn(){
+        leds = true;
+    }
+
+    public boolean getLeds(){
+        return leds;
     }
 
     public void end(){
