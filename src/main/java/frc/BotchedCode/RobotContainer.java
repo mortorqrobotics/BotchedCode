@@ -129,6 +129,8 @@ public class RobotContainer {
         controller1.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
         ));
+
+        controller1.a().onTrue(new InstantCommand(()->candle.setLEDs(255, 0, 0, 100, 0, 10)));
         
         controller1.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
