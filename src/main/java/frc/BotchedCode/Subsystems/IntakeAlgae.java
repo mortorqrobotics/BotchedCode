@@ -21,8 +21,8 @@ public class IntakeAlgae extends SubsystemBase {
         rightIntakeAlgae = new SparkMax(RobotMap.RIGHT_INTAKEALGAE_ID, MotorType.kBrushless);
         leds = false;
         
-        leftIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        leftIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+        leftIntakeAlgae.configure(new SparkMaxConfig().inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
 
     }
 

@@ -22,8 +22,8 @@ public class IntakeCoral extends SubsystemBase {
         rightIntakeCoral = new SparkMax(RobotMap.RIGHT_INTAKECORAL_ID, MotorType.kBrushless);
         leds = false;
         
-        leftIntakeCoral.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        leftIntakeCoral.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+        leftIntakeCoral.configure(new SparkMaxConfig().inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightIntakeCoral.configure(new SparkMaxConfig().inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
 
     }
 
