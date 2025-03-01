@@ -37,10 +37,11 @@ public class RobotMap {
 
 
     //Elevator
-    public static final double L2_HEIGHT = 0; //TODO
-    public static final double L3_HEIGHT = 0; //TODO
-    public static final double L4_HEIGHT = 0; //TODO
+    public static final double L2_HEIGHT = 10.08; //TODO
+    public static final double L3_HEIGHT = 17.89; //TODO
+    public static final double L4_HEIGHT = 31.87; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
+    public static final double REST_HEIGHT = 0; //TODO
 
     public static final int ELEVATOR_ID = 21; //TODO
     public static final int ELEVATOR2_ID = 22; //TODO
@@ -50,30 +51,31 @@ public class RobotMap {
     public static final double ELEVATOR_SPEED = 0.1; //TODO
 
     //Pivot
-    public static final double L23_ANGLE = 0.56; //TODO
-    public static final double L4_ANGLE = 0.42; //TODO
-    public static final double CORAL_STATION_ANGLE = 0.77; //TODO
+    public static final double L23_ANGLE = 7.988; //TODO
+    public static final double L4_ANGLE = 11.13; //TODO
+    public static final double CORAL_STATION_ANGLE = 23.38; //TODO
+    public static final double REST_ANGLE = 37.67; //TODO
 
-    public static final int PIVOT_ID = 15; //TODO
-    public static final int PIVOT_CANCODER_ID = 16; //TODO
+    public static final int PIVOT_ID = 23; //TODO
+    public static final int PIVOT_CANCODER_ID = 24; //TODO
     public static final double PIVOT_SPEED = 0.1; //TODO  .2
     public static final double PIVOT_LOWER_LIMIT = 0.38; //TODO
     public static final double PIVOT_UPPER_LIMIT = 0.80; //TODO
 
 
-    public static final int LEFT_INTAKEALGAE_ID = -1; //TODO
-    public static final int RIGHT_INTAKEALGAE_ID = -1; //TODO
+    public static final int LEFT_INTAKEALGAE_ID = 25; //TODO
+    public static final int RIGHT_INTAKEALGAE_ID = 26; //TODO
     public static final double  LEFT_INTAKEALGAE_SPEED = .25; //TODO
     public static final double  RIGHT_INTAKEALGAE_SPEED = -.25; //TODO
 
 
-    public static final int LEFT_INTAKECORAL_ID = -1; //TODO
-    public static final int RIGHT_INTAKECORAL_ID = -1; //TODO
+    public static final int LEFT_INTAKECORAL_ID = 27; //TODO
+    public static final int RIGHT_INTAKECORAL_ID = 28; //TODO
     public static final double INTAKECORAL_SPEED = 0.1;//TODO
 
 
-    public static final double BARB_SPEED = 0;//TODO 
-    public static final int BARB_ID = -1;//TODO 
+    public static final double BARB_SPEED = 0.4;//TODO 
+    public static final int BARB_ID = 29;//TODO 
 
 
     public static final double ALGAE_INTAKE_CURRENT_PICKUP = 10; //TODO

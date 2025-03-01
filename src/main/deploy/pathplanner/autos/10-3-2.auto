@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "to 10"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OuttakeCoralL3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeAlgaeL2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "10 to 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeAlage"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 to 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCoral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

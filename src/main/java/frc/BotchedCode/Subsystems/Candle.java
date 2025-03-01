@@ -33,25 +33,29 @@ public class Candle extends SubsystemBase{
 
     public void coralOn(){
         if (coralLedsOn.getAsBoolean()){
-            candle.setLEDs(255, 0, 0, 100, 8, 10);
+            candle.setLEDs(255, 0, 0, 100, 0, 4);
         }
     }
 
     public void coralOff(){
         if (!coralLedsOn.getAsBoolean()){
-            candle.setLEDs(0, 0, 0, 0, 8, 10);
+            candle.setLEDs(0, 0, 0, 0, 0, 4);
         }
     }
 
     public void algaeOn(){
         if (algaeLedsOn.getAsBoolean()){
-            candle.setLEDs(0, 0, 255, 100, 19, 10);
+            candle.setLEDs(0, 0, 255, 100, 4, 4);
         }
     }
 
     public void algaeOff(){
         if (!algaeLedsOn.getAsBoolean()){
-            candle.setLEDs(0, 0, 0, 0, 19, 10);
+            candle.setLEDs(0, 0, 0, 0,4, 4);
         }
+    }
+
+    public void setOnBoardLeds(int r, int b, int g) {
+        candle.setLEDs(r, g, b, 100, 0, 15);
     }
 }

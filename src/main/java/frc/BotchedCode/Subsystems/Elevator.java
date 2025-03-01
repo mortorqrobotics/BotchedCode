@@ -47,12 +47,13 @@ public class Elevator extends SubsystemBase{
     }
     
     public void up(){
-        mElevator.set(RobotMap.ELEVATOR_SPEED);
-        //mElevator2.set(RobotMap.ELEVATOR_SPEED);
+        //mElevator.set(RobotMap.ELEVATOR_SPEED);
+        setpoint+=0.1;
     }
 
     public void down(){
-        mElevator.set(-RobotMap.ELEVATOR_SPEED);
+        //mElevator.set(-RobotMap.ELEVATOR_SPEED);
+        setpoint-=0.1;
     }
 
     public void setSetpoint(double setpoint){

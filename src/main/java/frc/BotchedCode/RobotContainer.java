@@ -15,13 +15,11 @@ import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbOut;
@@ -72,6 +70,7 @@ public class RobotContainer {
 
     private final static CommandXboxController controller1 = new CommandXboxController(0);
     private final static CommandXboxController controller2 = new CommandXboxController(1);
+    private final static CommandXboxController controller3 = new CommandXboxController(2);
     
     public final static CommandSwerveDrivetrain drivetrain = createDrivetrain();
     public static Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
@@ -128,18 +127,32 @@ public class RobotContainer {
         controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
 
-        controller2.a().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
-        controller2.b().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
-        controller2.y().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
-        controller2.x().onTrue(new ParallelCommandGroup(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))));
+        // controller2.a().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))); //TODO
+        // controller2.b().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))); //TODO
+        // controller2.y().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))); //TODO
+        // controller2.x().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))); //TODO
+        // controller2.start().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))); //TODO
+
+        //controller2.a().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT))); //TODO
+        // controller2.b().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT))); //TODO
+        // controller2.y().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT))); //TODO
+        // controller2.x().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))); //TODO
+
+        controller2.a().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
+        controller2.b().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
+        controller2.y().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
+
+        //controller2.x().whileTrue(new InstantCommand(()->elevator.down()));
+        //controller2.y().whileTrue(new InstantCommand(()-> elevator.up()));
+        controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()->pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
 
 
         //Controls for intakes without candle
         // controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae)); 
         // controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae));
 
-        // controller2.leftBumper().onTrue(new IntakeCoralIn(intakeCoral)); 
-        // controller2.rightBumper().onTrue(new IntakeCoralOut(intakeCoral));
+        // controller2.leftTrigger().onTrue(new IntakeCoralIn(intakeCoral)); 
+        // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
         //Controls with candle
         controller2.leftBumper().onTrue(
@@ -152,19 +165,19 @@ public class RobotContainer {
                 new IntakeAlgaeOut(intakeAlgae),
                 new InstantCommand(()->candle.algaeOff())
         ));
-        controller2.leftBumper().onTrue(
+        controller2.leftTrigger().onTrue(
             Commands.sequence(
                 new IntakeCoralIn(intakeCoral),
                 new InstantCommand(()->candle.coralOn())
         ));
-        controller2.rightBumper().onTrue(
+        controller2.rightTrigger().onTrue(
             Commands.sequence(
                 new IntakeCoralOut(intakeCoral),
                 new InstantCommand(()->candle.coralOff())
         ));
 
         controller1.x().whileTrue(new BarbIn(barb));
-        controller1.y().whileTrue(new BarbOut(barb));
+        controller3.y().whileTrue(new BarbOut(barb));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
