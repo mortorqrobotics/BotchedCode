@@ -64,10 +64,10 @@ public class IntakeCoral extends SubsystemBase {
         return leds;
     }
     
-    @Override
-    public void periodic(){
-            SmartDashboard.putNumber("LIntakeDraw", leftIntakeCoral.getOutputCurrent());
-            SmartDashboard.putNumber("RIntakeDraw", rightIntakeCoral.getOutputCurrent());
+    // @Override
+    // public void periodic(){
+    //         SmartDashboard.putNumber("LIntakeDraw", leftIntakeCoral.getOutputCurrent());
+    //         SmartDashboard.putNumber("RIntakeDraw", rightIntakeCoral.getOutputCurrent());
             
-    }
+    // }
 }

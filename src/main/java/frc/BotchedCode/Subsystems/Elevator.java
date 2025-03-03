@@ -88,8 +88,8 @@ public class Elevator extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Elevator encoder", mElevator.getPosition().getValueAsDouble());
-        if(encoderZeroed){
-            mElevator.setControl(m_request.withPosition(setpoint));
-        }
+        //if(encoderZeroed){
+        mElevator.setControl(m_request.withPosition(setpoint));
+        //}
     }
 }
