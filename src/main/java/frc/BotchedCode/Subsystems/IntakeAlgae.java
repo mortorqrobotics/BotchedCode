@@ -22,18 +22,18 @@ public class IntakeAlgae extends SubsystemBase {
         leds = false;
         
         leftIntakeAlgae.configure(new SparkMaxConfig().inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightIntakeAlgae.configure(new SparkMaxConfig().inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+        rightIntakeAlgae.configure(new SparkMaxConfig().inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
 
     }
 
     public void in(){
-        leftIntakeAlgae.set(-RobotMap.LEFT_INTAKEALGAE_SPEED);
-        rightIntakeAlgae.set(RobotMap.RIGHT_INTAKEALGAE_SPEED);
+        leftIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
+        rightIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
     }
 
     public void out(){
-        leftIntakeAlgae.set(RobotMap.LEFT_INTAKEALGAE_SPEED);
-        rightIntakeAlgae.set(-RobotMap.RIGHT_INTAKEALGAE_SPEED);
+        leftIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
+        rightIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
     }
 
     public boolean pickedUp(){

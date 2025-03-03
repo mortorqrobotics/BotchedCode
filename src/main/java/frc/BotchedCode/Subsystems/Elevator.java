@@ -28,9 +28,11 @@ public class Elevator extends SubsystemBase{
         var talonFXConfigs = new TalonFXConfiguration();
         //talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         var slot0Configs = talonFXConfigs.Slot0;
-        slot0Configs.kP = 25; // An error of 1 rps results in 0.11 V output
+        slot0Configs.kP = 5; // An error of 1 rps results in 0.11 V output
         slot0Configs.kI = 0; // no output for integrated error
         slot0Configs.kD = 0; // no output for error derivative
+
+        slot0Configs.kG = 1;
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 40; // Target cruise velocity of 80 rps
@@ -54,6 +56,10 @@ public class Elevator extends SubsystemBase{
     public void down(){
         //mElevator.set(-RobotMap.ELEVATOR_SPEED);
         setpoint-=0.1;
+    }
+
+    public double getPosition(){
+        return mElevator.getPosition().getValueAsDouble();
     }
 
     public void setSetpoint(double setpoint){

@@ -35,6 +35,7 @@ public class RotateToTag extends Command {
 
     @Override
     public void initialize(){
+        angleController.reset();
         var tagPose = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get();
         angleSetpoint = tagPose.getRotation().getAngle() + Math.PI + angleOffset;
     }

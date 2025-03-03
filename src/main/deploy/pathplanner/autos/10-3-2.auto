@@ -11,22 +11,34 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "L3Position"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "OuttakeCoralL3"
+                  "name": "OuttakeCoral"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeAlgaeL2"
+                  "name": "IntakeAlgae"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ProcessorPosition"
           }
         },
         {
@@ -45,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "3 to 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralStationPosition"
           }
         },
         {

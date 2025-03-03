@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ProcessorPosition"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "10 to 3"

@@ -25,14 +25,16 @@ public class StrafeToTag extends Command {
     public StrafeToTag(CommandSwerveDrivetrain drivetrainSubsystem, double offset) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.offset = offset;
-        xController = new PIDController(1, 3, 0);
+        double kp = 1, ki = 3, kd = 0, tolerance = 0.01;
+
+        xController = new PIDController(kp, ki, kd);
         // TODO tune PID and tolerance
-        xController.setTolerance(0.01);
+        xController.setTolerance(tolerance);
         xController.setSetpoint(xSetpoint);
 
-        yController = new PIDController(5, 7, 0);
+        yController = new PIDController(kp, ki, kd);
         // TODO tune PID and tolerance
-        yController.setTolerance(0.01);
+        yController.setTolerance(tolerance);
         yController.setSetpoint(ySetpoint);
 
         addRequirements(drivetrainSubsystem);
@@ -40,6 +42,9 @@ public class StrafeToTag extends Command {
 
     @Override
     public void initialize(){
+        xController.reset();
+        yController.reset();
+
         var tagPose = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get();
         double angle = RobotContainer.drivetrain.getState().Pose.getRotation().getRadians();
         xSetpoint = tagPose.getX() - offset*Math.cos(angle);
@@ -56,7 +61,7 @@ public class StrafeToTag extends Command {
         var robotPos = RobotContainer.drivetrain.getState().Pose;
 
         double xSpeed = xController.calculate(robotPos.getX(), xSetpoint);
-        double ySpeed = xController.calculate(robotPos.getY(), ySetpoint);
+        double ySpeed = yController.calculate(robotPos.getY(), ySetpoint);
 
         System.out.println("XPose: " + robotPos.getX() + "   YPose: " + robotPos.getY());
         System.out.println("FXPose: " + xSetpoint + "   FYPose: " + ySetpoint);
@@ -66,6 +71,7 @@ public class StrafeToTag extends Command {
             RobotContainer.drive.withVelocityX(xSpeed) // Drive forward with negative Y (forward)
             .withVelocityY(ySpeed) // Drive left with negative X (left)
             .withRotationalRate(0)
+            
         ); // Drive counterclockwise with negative X (left)
     }
 

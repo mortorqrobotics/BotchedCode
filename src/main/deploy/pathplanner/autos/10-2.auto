@@ -13,13 +13,31 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeCoralL3"
+            "name": "L3Position"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RestPosition"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "10 to 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralStationPosition"
           }
         },
         {
