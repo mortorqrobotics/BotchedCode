@@ -148,6 +148,12 @@ public class RobotContainer {
         controller1.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
+        controller1.pov(90).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(0).withVelocityY(0.5))
+        );
+        controller1.pov(270).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(0).withVelocityY(-0.5))
+        );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
