@@ -85,6 +85,11 @@ public class Elevator extends SubsystemBase{
         mElevator.set(0);
         //mElevator2.set(0);
     }
+
+    public boolean atSetpoint(){
+        return Math.abs(getPosition()-setpoint)<0.2;
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Elevator encoder", mElevator.getPosition().getValueAsDouble());
