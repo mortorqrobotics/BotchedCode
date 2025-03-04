@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbOut;
@@ -101,6 +103,31 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+
+        Command[] intakes ={
+            Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())),
+            Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())),
+            Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())),
+            Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff()))
+        };
+        Command[] positions = {
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))
+        };
+        Command atSetpoint = new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint());
+
+        NamedCommands.registerCommand("L2Position", Commands.sequence(positions[0], atSetpoint));
+        NamedCommands.registerCommand("L3Position", Commands.sequence(positions[1], atSetpoint));
+        NamedCommands.registerCommand("L4Position", Commands.sequence(positions[2], atSetpoint));
+        NamedCommands.registerCommand("RestPosition", Commands.sequence(positions[3], atSetpoint));
+
+        NamedCommands.registerCommand("IntakeAlgae", intakes[0]);
+        NamedCommands.registerCommand("OuttaleAlgae", intakes[1]);
+        NamedCommands.registerCommand("IntakeCoral", intakes[2]);
+        NamedCommands.registerCommand("OuttakeCoral", intakes[3]);
+
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -122,26 +149,24 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        //controller2.a().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))); //TODO
-        // controller2.b().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))); //TODO
-        //controller2.y().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))); //TODO
-        // controller2.x().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))); //TODO
-        // controller2.start().onTrue(new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))); //TODO
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        //controller2.a().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT))); //TODO
-        // controller2.b().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT))); //TODO
-        // controller2.y().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT))); //TODO
-        // controller2.x().onTrue(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT))); //TODO
+        // reset the field-centric heading on left bumper press
+        controller1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        controller2.a().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
-        controller2.b().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
-        controller2.y().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
-        controller2.x().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.CORAL_STATION_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.CORAL_STATION_ANGLE))));
-        //controller2.back().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.PROCESSOR_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.PROCESSOR_ANGLE))));
+        controller2.a().onTrue(positions[0]); //TODO
+        controller2.b().onTrue(positions[1]);
+        controller2.y().onTrue(positions[2]);
+        //controller2.x().onTrue(Positions[3]);
+        controller2.start().onTrue(positions[3]); //TODO
 
         //controller2.x().whileTrue(new InstantCommand(()->elevator.down()));
         //controller2.y().whileTrue(new InstantCommand(()-> elevator.up()));
-        controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()->pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
 
 
         //Controls for intakes without candle
@@ -152,38 +177,13 @@ public class RobotContainer {
         // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
         //Controls with candle
-        controller2.leftBumper().onTrue(
-            Commands.sequence(
-                new IntakeAlgaeIn(intakeAlgae),
-                new InstantCommand(()->candle.algaeOn())
-            )); 
-        controller2.rightBumper().onTrue(
-            Commands.sequence(
-                new IntakeAlgaeOut(intakeAlgae),
-                new InstantCommand(()->candle.algaeOff())
-        ));
-        controller2.leftTrigger().onTrue(
-            Commands.sequence(
-                new IntakeCoralIn(intakeCoral),
-                new InstantCommand(()->candle.coralOn())
-        ));
-        controller2.rightTrigger().onTrue(
-            Commands.sequence(
-                new IntakeCoralOut(intakeCoral),
-                new InstantCommand(()->candle.coralOff())
-        ));
+        controller2.leftBumper().onTrue(intakes[0]); 
+        controller2.rightBumper().onTrue(intakes[1]);
+        controller2.leftTrigger().onTrue(intakes[2]);
+        controller2.rightTrigger().onTrue(intakes[3]);
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        // reset the field-centric heading on left bumper press
-        controller1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

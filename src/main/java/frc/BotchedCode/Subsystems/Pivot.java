@@ -63,6 +63,10 @@ public class Pivot extends SubsystemBase{
         return mpivot.getPosition().getValueAsDouble();
     }
 
+    public boolean atSetpoint(){
+        return Math.abs(getPosition()-setpoint)<1;
+    }
+
     public boolean reachedLowerLimit(){
         return getPosition() < RobotMap.PIVOT_LOWER_LIMIT;
     }
