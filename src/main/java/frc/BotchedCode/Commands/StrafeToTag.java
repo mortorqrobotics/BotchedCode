@@ -4,9 +4,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.RobotMap;
+import frc.BotchedCode.Robot;
 import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Utils.LimelightHelpers;
+import frc.BotchedCode.Utils.LimelightHelpers.RawDetection;
 
 public class StrafeToTag extends Command {
     private CommandSwerveDrivetrain drivetrainSubsystem;
@@ -51,25 +53,30 @@ public class StrafeToTag extends Command {
         xController.reset();
         yController.reset();
 
-        var tagPose = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID("limelight")).get();
-        double tagHeight = tagPose.getZ();
-        double ty = LimelightHelpers.getTY(RobotMap.LIMELIGHT_NAME) + LimelightHelpers.getCameraPose3d_RobotSpace(RobotMap.LIMELIGHT_NAME).getRotation().getY();
-        double tx = LimelightHelpers.getTX(RobotMap.LIMELIGHT_NAME);
-        xDist = tagHeight/Math.tan(Units.degreesToRadians(ty));
-        yDist = xDist*Math.tan(Units.degreesToRadians(tx));
-        System.out.println("XDist: " + xDist + "   YDist: " + yDist);
+        //var robotPose = drivetrainSubsystem.getState().Pose;
+        
+        //var tagPose = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+        //double tagHeight = tagPose.getZ();
+        //double ty = LimelightHelpers.getTY(RobotMap.LIMELIGHT_NAME) + LimelightHelpers.getCameraPose3d_RobotSpace(RobotMap.LIMELIGHT_NAME).getRotation().getY();
+        //double tx = LimelightHelpers.getTX(RobotMap.LIMELIGHT_NAME);
+        //xDist = tagHeight/Math.tan(Units.degreesToRadians(ty));
+        //yDist = xDist*Math.tan(Units.degreesToRadians(tx));
+        //System.out.println("XDist: " + xDist + "   YDist: " + yDist);
 
         //double angle = RobotContainer.drivetrain.getState().Pose.getRotation().getRadians();
         //xSetpoint = tagPose.getX() - offset*Math.cos(angle);
         //ySetpoint = tagPose.getY() - offset*Math.sin(angle);
-        xSetpoint = xOffset;
-        ySetpoint = yOffset;
+        //xSetpoint = tagInView ? robotPose.getX() + (xDist-xOffset) : robotPose.getX();
+        //ySetpoint = tagInView ? robotPose.getY() + (yDist-yOffset) : robotPose.getY();
     }
 
     @Override
     public void execute() {
-        double xSpeed = xController.calculate(xDist, xOffset);
-        double ySpeed = yController.calculate(yDist, yOffset);
+        //var robotPose = drivetrainSubsystem.getState().Pose;
+        var targetPos = LimelightHelpers.getBotPose3d_TargetSpace(RobotMap.LIMELIGHT_NAME);
+
+        double xSpeed = xController.calculate(targetPos.getX(), xOffset);
+        double ySpeed = yController.calculate(targetPos.getY(), yOffset);
 
         //var robotPos = RobotContainer.drivetrain.getState().Pose;
 
@@ -89,6 +96,6 @@ public class StrafeToTag extends Command {
 
     @Override
     public boolean isFinished() {
-        return xController.atSetpoint() && yController.atSetpoint();
+        return xController.atSetpoint() && yController.atSetpoint() && LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME);
     }
 }
