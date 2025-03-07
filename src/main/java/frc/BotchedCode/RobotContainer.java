@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.RotateToTag;
 import frc.BotchedCode.Commands.StrafeToTag;
+import frc.BotchedCode.Commands.StrafeToTagNew;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbOut;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
@@ -196,7 +197,7 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(Commands.sequence(new RotateToTag(drivetrain), new StrafeToTag(drivetrain, true)));
+        controller1.y().onTrue(new StrafeToTagNew(drivetrain, true));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

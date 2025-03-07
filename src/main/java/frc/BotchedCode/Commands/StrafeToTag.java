@@ -96,6 +96,6 @@ public class StrafeToTag extends Command {
 
     @Override
     public boolean isFinished() {
-        return xController.atSetpoint() && yController.atSetpoint() && LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME);
+        return (xController.atSetpoint() && yController.atSetpoint()) || !LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME);
     }
 }
