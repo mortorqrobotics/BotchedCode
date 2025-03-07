@@ -65,13 +65,17 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 1);
+  }
 
   @Override
   public void disabledPeriodic() {}
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
+  }
 
   @Override
   public void autonomousInit() {
