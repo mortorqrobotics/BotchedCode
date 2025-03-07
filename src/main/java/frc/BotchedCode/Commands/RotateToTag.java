@@ -21,9 +21,9 @@ public class RotateToTag extends Command {
      * @param drivetrainSubsystem
      * @param limelight
      */
-    public RotateToTag(CommandSwerveDrivetrain drivetrainSubsystem, double angleOffset) {
+    public RotateToTag(CommandSwerveDrivetrain drivetrainSubsystem) {
         this.drivetrainSubsystem = drivetrainSubsystem;
-        this.angleOffset = angleOffset;
+        this.angleOffset = 0.0;
         angleController = new PIDController(10, 0, 0);
         // TODO tune PID and tolerance
         angleController.setTolerance(0.025);
