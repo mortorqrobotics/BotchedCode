@@ -33,7 +33,7 @@ public class StrafeToTag extends Command {
         this.drivetrainSubsystem = drivetrainSubsystem;
         xOffset = 0.5;
         yOffset = centered ? 0 : 0.2;
-        double kp = 1, ki = 3, kd = 0, tolerance = 0.02;
+        double kp = 1, ki = 0, kd = 0, tolerance = 0.02;
 
         xController = new PIDController(kp, ki, kd);
         // TODO tune PID and tolerance
