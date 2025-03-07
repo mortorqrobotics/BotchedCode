@@ -12,20 +12,20 @@
         "y": 1.4176648423034686
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "startPoint"
     },
     {
       "anchor": {
-        "x": 3.75,
-        "y": 2.6500000000000004
+        "x": 3.709431818181818,
+        "y": 2.6439346590909087
       },
       "prevControl": {
-        "x": 4.9247917475895235,
-        "y": 1.4632139124269157
+        "x": 4.884223565771341,
+        "y": 1.457148571517824
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "8"
     }
   ],
   "rotationTargets": [],
