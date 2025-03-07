@@ -9,7 +9,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,15 +23,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.BotchedCode.Commands.RotateToTag;
-import frc.BotchedCode.Commands.StrafeToTag;
-import frc.BotchedCode.Commands.StrafeToTagNew;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbOut;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralIn;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralOut;
+import frc.BotchedCode.Commands.StrafeToTagNew;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.Barb;
@@ -108,31 +105,32 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
 
-        Command[] intakes ={
-            Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())),
-            Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())),
-            Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())),
-            Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff()))
-        };
-        Command[] positions = {
+        NamedCommands.registerCommand("L2Position", Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        ));
+        NamedCommands.registerCommand("L3Position", Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        ));
+        NamedCommands.registerCommand("L4Position", Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))
-        };
-        Command atSetpoint = new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint());
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        ));
+        NamedCommands.registerCommand("RestPosition", Commands.sequence(
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        ));
 
-        NamedCommands.registerCommand("L2Position", Commands.sequence(positions[0], atSetpoint));
-        NamedCommands.registerCommand("L3Position", Commands.sequence(positions[1], atSetpoint));
-        NamedCommands.registerCommand("L4Position", Commands.sequence(positions[2], atSetpoint));
-        NamedCommands.registerCommand("RestPosition", Commands.sequence(positions[3], atSetpoint));
+        NamedCommands.registerCommand("IntakeAlgae", Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())));
+        NamedCommands.registerCommand("OuttakeAlgae", Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
+        NamedCommands.registerCommand("IntakeCoral", Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
+        NamedCommands.registerCommand("OuttakeCoral", Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
 
-        NamedCommands.registerCommand("IntakeAlgae", intakes[0]);
-        NamedCommands.registerCommand("OuttaleAlgae", intakes[1]);
-        NamedCommands.registerCommand("IntakeCoral", intakes[2]);
-        NamedCommands.registerCommand("OuttakeCoral", intakes[3]);
-
-        NamedCommands.registerCommand("Startup", Commands.parallel(intakes[2], Commands.sequence(positions[3], atSetpoint)));
+        NamedCommands.registerCommand("Startup", Commands.parallel(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())), Commands.sequence(
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))), 
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        )));
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -171,11 +169,11 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         controller1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        controller2.a().onTrue(positions[0]); //TODO
-        controller2.b().onTrue(positions[1]);
-        controller2.y().onTrue(positions[2]);
+        controller2.a().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
+        controller2.b().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
+        controller2.y().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
         //controller2.x().onTrue(Positions[3]);
-        controller2.start().onTrue(positions[3]); //TODO
+        controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
 
         //controller2.x().whileTrue(new InstantCommand(()->elevator.down()));
         //controller2.y().whileTrue(new InstantCommand(()-> elevator.up()));
@@ -189,10 +187,10 @@ public class RobotContainer {
         // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
         //Controls with candle
-        controller2.leftBumper().onTrue(intakes[0]); 
-        controller2.rightBumper().onTrue(intakes[1]);
-        controller2.leftTrigger().onTrue(intakes[2]);
-        controller2.rightTrigger().onTrue(intakes[3]);
+        controller2.leftBumper().onTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
+        controller2.rightBumper().onTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
+        controller2.leftTrigger().onTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
+        controller2.rightTrigger().onTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
