@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -127,6 +128,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("OuttaleAlgae", intakes[1]);
         NamedCommands.registerCommand("IntakeCoral", intakes[2]);
         NamedCommands.registerCommand("OuttakeCoral", intakes[3]);
+
+        NamedCommands.registerCommand("Startup", Commands.parallel(intakes[2], Commands.sequence(positions[3], atSetpoint)));
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically

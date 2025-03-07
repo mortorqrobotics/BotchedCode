@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "to 8"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "to 8"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Startup"
+                }
+              }
+            ]
           }
         },
         {
@@ -50,7 +63,7 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeAlage"
+            "name": "OuttakeAlgae"
           }
         },
         {

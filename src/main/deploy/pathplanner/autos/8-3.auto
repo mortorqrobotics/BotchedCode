@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "to 8"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "to 8"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Startup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L3Position"
           }
         },
         {
@@ -17,16 +36,22 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "OuttakeCoralL3"
+                  "name": "OuttakeCoral"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeAlgaeL2"
+                  "name": "IntakeAlgae"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ProcessorPosition"
           }
         },
         {
@@ -38,7 +63,13 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeAlage"
+            "name": "OuttakeAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RestPosition"
           }
         }
       ]

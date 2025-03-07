@@ -5,15 +5,40 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "to 6"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "to 6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Startup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "OuttakeCoralL3"
+            "name": "L3Position"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OuttakeCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RestPosition"
           }
         },
         {

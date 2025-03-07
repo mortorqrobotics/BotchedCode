@@ -50,19 +50,26 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeAlage"
+            "name": "OuttakeAlgae"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "3 to 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "CoralStationPosition"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3 to 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RestPosition"
+                }
+              }
+            ]
           }
         },
         {

@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "to 10"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "to 10"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Startup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L2Postion"
+            "name": "L3Position"
           }
         },
         {
@@ -50,7 +63,7 @@
         {
           "type": "named",
           "data": {
-            "name": "OuttakeAlage"
+            "name": "OuttakeAlgae"
           }
         }
       ]
