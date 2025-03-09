@@ -17,13 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RestPosition"
+                  "name": "Startup"
                 }
               }
             ]
@@ -50,7 +44,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

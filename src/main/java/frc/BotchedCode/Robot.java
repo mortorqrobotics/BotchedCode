@@ -6,10 +6,7 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,10 +27,10 @@ public class Robot extends TimedRobot {
 
     @Override
   public void robotInit(){
-    UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(640, 360);
-    camera.setFPS(30);
-    camera.setPixelFormat(PixelFormat.kMJPEG);
+    // UsbCamera camera = CameraServer.startAutomaticCapture();
+    // camera.setResolution(640, 360);
+    // camera.setFPS(30);
+    // camera.setPixelFormat(PixelFormat.kMJPEG);
   }
 
   @Override
@@ -49,6 +46,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("PoseX", RobotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", RobotContainer.drivetrain.getState().Pose.getY());
     SmartDashboard.putNumber("Yaw", RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("Viewed Tag", LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
 
     if (kUseLimelight) {
       var driveState = RobotContainer.drivetrain.getState();

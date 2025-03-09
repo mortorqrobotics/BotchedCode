@@ -39,7 +39,7 @@ public class IntakeCoralIn extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intakeCoral.end();
+        intakeCoral.backcurrent();
         intakeCoral.ledsOn();
     }
 }

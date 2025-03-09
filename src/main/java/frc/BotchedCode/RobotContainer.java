@@ -83,9 +83,6 @@ public class RobotContainer {
 
     public RobotContainer() {
 
-        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-
         elevator = new Elevator();
 
         pivot = new Pivot();
@@ -97,13 +94,6 @@ public class RobotContainer {
         barb = new Barb();
 
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
-
-        configureBindings();
-    }
-
-    private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
 
         NamedCommands.registerCommand("L2Position", Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
@@ -131,6 +121,16 @@ public class RobotContainer {
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))), 
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
+
+        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
+        SmartDashboard.putData("Auto Mode", autoChooser);
+
+        configureBindings();
+    }
+
+    private void configureBindings() {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -187,10 +187,10 @@ public class RobotContainer {
         // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
         //Controls with candle
-        controller2.leftBumper().onTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
-        controller2.rightBumper().onTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
-        controller2.leftTrigger().onTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
-        controller2.rightTrigger().onTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
+        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
+        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
+        controller2.leftTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
+        controller2.rightTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
@@ -203,13 +203,13 @@ public class RobotContainer {
     
     public static double getRobotSpeed() {
         
-        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.1 : 1.0;
+        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.3 : 1.0;
     // return 0.7;
     }
 
     public static double getRobotYawSpeed() {
         
-        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.1 : 0.7*(1.0/0.9);
+        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.3 : 1;
     // return 0.7;
     }
 

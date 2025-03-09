@@ -51,6 +51,11 @@ public class IntakeCoral extends SubsystemBase {
         rightIntakeCoral.set(0);
     }
 
+    public void backcurrent(){
+        leftIntakeCoral.set(0.05);
+        rightIntakeCoral.set(0.05);
+    }
+
     public void ledsOff(){
         leds = false;
     }
