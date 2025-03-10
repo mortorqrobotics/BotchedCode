@@ -52,7 +52,7 @@ public class IntakeCoral extends SubsystemBase {
     }
 
     public void backcurrent(){
-        leftIntakeCoral.set(0.05);
+        leftIntakeCoral.set(-0.05);
         rightIntakeCoral.set(0.05);
     }
 

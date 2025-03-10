@@ -6,7 +6,10 @@ package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,10 +30,10 @@ public class Robot extends TimedRobot {
 
     @Override
   public void robotInit(){
-    // UsbCamera camera = CameraServer.startAutomaticCapture();
-    // camera.setResolution(640, 360);
-    // camera.setFPS(30);
-    // camera.setPixelFormat(PixelFormat.kMJPEG);
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(640, 360);
+    camera.setFPS(30);
+    camera.setPixelFormat(PixelFormat.kMJPEG);
   }
 
   @Override
@@ -66,6 +69,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 1);
+    LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 200);
   }
 
   @Override
@@ -74,6 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledExit() {
     LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
+    LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 0);
   }
 
   @Override

@@ -34,7 +34,7 @@ public class IntakeAlgaeIn extends Command {
 
     @Override 
     public boolean isFinished(){
-        return pickupCount > 20;
+        return pickupCount > 60;
     }
     
 

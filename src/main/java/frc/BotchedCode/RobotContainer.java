@@ -29,6 +29,10 @@ import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralIn;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralOut;
+import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
+import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
+import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
+import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
 import frc.BotchedCode.Commands.StrafeToTagNew;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
@@ -61,7 +65,7 @@ public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     public final static SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -153,10 +157,10 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
         controller1.pov(90).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0).withVelocityY(0.5))
+            forwardStraight.withVelocityX(0).withVelocityY(-0.5))
         );
         controller1.pov(270).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0).withVelocityY(-0.5))
+            forwardStraight.withVelocityX(0).withVelocityY(0.5))
         );
 
         // Run SysId routines when holding back/start and X/Y.
@@ -186,9 +190,14 @@ public class RobotContainer {
         // controller2.leftTrigger().onTrue(new IntakeCoralIn(intakeCoral)); 
         // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
+        controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
+        controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
+        controller2.povRight().whileTrue(new ManualPivotUp(pivot));
+        controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
+
         //Controls with candle
-        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
-        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
+        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
+        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
         controller2.leftTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
         controller2.rightTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
 

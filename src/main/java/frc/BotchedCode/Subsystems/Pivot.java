@@ -44,14 +44,14 @@ public class Pivot extends SubsystemBase{
 
         resetEncoder();
 
-        setpoint = getPosition();
+        //setpoint = getPosition();
     }
     
     public void up(){
-        mpivot.set(RobotMap.PIVOT_SPEED);
+        setSetpoint(setpoint+0.2);
     }
     public void down(){
-        mpivot.set(-RobotMap.PIVOT_SPEED);
+        setSetpoint(setpoint-0.2);
 
     }
 
@@ -100,6 +100,7 @@ public class Pivot extends SubsystemBase{
     public void resetEncoder(){
         encoderZeroed = true;
         mpivot.setPosition(100*getCANCoderValue());
+        setSetpoint(mpivot.getPosition().getValueAsDouble());
     }
 
     @Override

@@ -27,13 +27,13 @@ public class IntakeAlgae extends SubsystemBase {
     }
 
     public void in(){
-        leftIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
-        rightIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
+        leftIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
+        rightIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
     }
 
     public void out(){
-        leftIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
-        rightIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
+        leftIntakeAlgae.set(-RobotMap.INTAKEALGAE_SPEED);
+        rightIntakeAlgae.set(RobotMap.INTAKEALGAE_SPEED);
     }
 
     public boolean pickedUp(){
