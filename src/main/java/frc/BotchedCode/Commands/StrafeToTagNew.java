@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
 public class StrafeToTagNew extends Command {
@@ -34,11 +33,11 @@ public class StrafeToTagNew extends Command {
     public StrafeToTagNew(CommandSwerveDrivetrain drivetrainSubsystem, boolean centered) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         running = false;
-        xOffset = 0.73;
-        yOffset = centered ? 0.1 : -0.2;
+        xOffset = 0.67;
+        yOffset = centered ? 0.09 : -0.2;
 
-        SmartDashboard.putNumber("kp", 3);
-        SmartDashboard.putNumber("ki", 0.75);
+        SmartDashboard.putNumber("kp", 1);
+        SmartDashboard.putNumber("ki", 0.6);
         SmartDashboard.putNumber("kd", 0);
         SmartDashboard.putNumber("tolerance", 0.02);
         SmartDashboard.putNumber("speed", 0.0);
