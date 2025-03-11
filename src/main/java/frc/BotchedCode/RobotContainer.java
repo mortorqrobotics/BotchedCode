@@ -116,6 +116,11 @@ public class RobotContainer {
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         ));
 
+        NamedCommands.registerCommand("ProcessorPosition", Commands.sequence(
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
+            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
+        ));
+
         NamedCommands.registerCommand("IntakeAlgae", Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())));
         NamedCommands.registerCommand("OuttakeAlgae", Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
         NamedCommands.registerCommand("IntakeCoral", Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));

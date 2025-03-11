@@ -46,7 +46,7 @@ public class RobotMap {
     public static final double ELEVATOR_SPEED = 0.1; //TODO
 
     //Pivot
-    public static final double L23_ANGLE = 13; //TODO
+    public static final double L23_ANGLE = 12; //TODO
     public static final double L4_ANGLE =10; //TODO
     public static final double CORAL_STATION_ANGLE = 25; //TODO
     public static final double REST_ANGLE = 25;
