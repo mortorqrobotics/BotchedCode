@@ -4,14 +4,19 @@
 
 package frc.BotchedCode;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -33,7 +38,6 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
-import frc.BotchedCode.Commands.StrafeToTagNew;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.Barb;
@@ -43,6 +47,7 @@ import frc.BotchedCode.Subsystems.Elevator;
 import frc.BotchedCode.Subsystems.IntakeAlgae;
 import frc.BotchedCode.Subsystems.IntakeCoral;
 import frc.BotchedCode.Subsystems.Pivot;
+import frc.BotchedCode.Utils.LimelightHelpers;
 
 
 
@@ -66,7 +71,7 @@ public class RobotContainer {
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    public static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     public final static SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -201,15 +206,15 @@ public class RobotContainer {
         controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
 
         //Controls with candle
-        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
-        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
+        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
+        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
         controller2.leftTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
         controller2.rightTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new StrafeToTagNew(drivetrain, true));
+        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper()).schedule()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -239,6 +244,23 @@ public class RobotContainer {
             VecBuilder.fill(RobotMap.kPositionStdDevX, RobotMap.kPositionStdDevY, Units.degreesToRadians(RobotMap.kPositionStdDevTheta)),
             VecBuilder.fill(RobotMap.kVisionStdDevX, RobotMap.kVisionStdDevY, Units.degreesToRadians(RobotMap.kVisionStdDevTheta)),
             TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
+        );
+    }
+    public static Command defineEndPos(BooleanSupplier offCenter){
+        double xOffset = 0.67;
+        double yOffset = offCenter.getAsBoolean() ? -0.2 : 0.09;
+
+        var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+        double tagRotation = tagPose.getRotation().getAngle();
+        double xPos = tagPose.getX()+xOffset*Math.cos(tagRotation)+yOffset*Math.sin(tagRotation);
+        double yPos = tagPose.getY()+xOffset*Math.sin(tagRotation)+yOffset*Math.cos(tagRotation);
+
+        PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
+
+        return AutoBuilder.pathfindToPose(
+            new Pose2d(new Translation2d(xPos, yPos), new Rotation2d(tagRotation + Math.PI)),
+            contraints,
+            0.0
         );
     }
 }

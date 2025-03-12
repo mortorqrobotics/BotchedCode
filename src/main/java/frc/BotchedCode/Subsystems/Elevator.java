@@ -87,7 +87,6 @@ public class Elevator extends SubsystemBase{
     }
 
     public boolean atSetpoint(){
-        System.out.print(Math.abs(getPosition()-setpoint));
         return Math.abs(getPosition()-setpoint)<0.3;
     }
 

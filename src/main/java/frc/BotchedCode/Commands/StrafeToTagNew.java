@@ -34,7 +34,7 @@ public class StrafeToTagNew extends Command {
         this.drivetrainSubsystem = drivetrainSubsystem;
         running = false;
         xOffset = 0.67;
-        yOffset = centered ? 0.09 : -0.2;
+        yOffset = centered ? 0.1 : -0.2;
 
         SmartDashboard.putNumber("kp", 1);
         SmartDashboard.putNumber("ki", 0.6);
@@ -66,8 +66,8 @@ public class StrafeToTagNew extends Command {
         xController.reset();
         yController.reset();
         angleController.reset();
+        
         speed = 0;
-
         timer = 0;
 
         xController.setP(SmartDashboard.getNumber("kp", 0));
@@ -81,7 +81,7 @@ public class StrafeToTagNew extends Command {
         yController.setTolerance(SmartDashboard.getNumber("tolerance", 0));
 
         if (LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME)){
-            var tagPose = RobotMap.ANDYMARK_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+            var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
             double tagRotation = tagPose.getRotation().getAngle();
             xSetpoint = tagPose.getX()+xOffset*Math.cos(tagRotation)+yOffset*Math.sin(tagRotation);
             ySetpoint = tagPose.getY()+xOffset*Math.sin(tagRotation)+yOffset*Math.cos(tagRotation);
@@ -115,8 +115,13 @@ public class StrafeToTagNew extends Command {
         }
         var currentPose = drivetrainSubsystem.getState().Pose;
 
-        double xSpeed = xController.calculate(currentPose.getX());
-        double ySpeed = yController.calculate(currentPose.getY());
+        // var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+        // double tagRotation = tagPose.getRotation().getAngle();
+        // xSetpoint = tagPose.getX()+xOffset*Math.cos(tagRotation)+yOffset*Math.sin(tagRotation);
+        // ySetpoint = tagPose.getY()+xOffset*Math.sin(tagRotation)+yOffset*Math.cos(tagRotation);
+
+        double xSpeed = xController.calculate(currentPose.getX(), xSetpoint);
+        double ySpeed = yController.calculate(currentPose.getY(), ySetpoint);
         double rotationSpeed = angleController.calculate(currentPose.getRotation().getRadians());
         SmartDashboard.putNumber("X Error", xController.getError());
         SmartDashboard.putNumber("Y Error", yController.getError());
@@ -144,8 +149,6 @@ public class StrafeToTagNew extends Command {
 
     @Override
     public void end(boolean interupted){
-        RobotContainer.drive.withVelocityX(0)
-            .withVelocityY(0)
-            .withRotationalRate(0.001);
+        drivetrainSubsystem.applyRequest(() -> RobotContainer.brake);
     }
 }
