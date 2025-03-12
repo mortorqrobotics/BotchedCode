@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {
-    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
+    //LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
     LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 0);
   }
 

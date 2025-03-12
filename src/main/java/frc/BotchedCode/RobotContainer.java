@@ -20,7 +20,6 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -218,7 +217,7 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper())));
+        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper()).schedule()).until(controller1.start()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -250,32 +249,45 @@ public class RobotContainer {
             TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
         );
     }
-    public static void defineEndPos(BooleanSupplier offCenter){
-        double farX = 1.5;
-        double xOffset = 0.67;
-        double yOffset = offCenter.getAsBoolean() ? -0.2 : 0.09;
+    public static Command defineEndPos(BooleanSupplier offCenter){
 
-        var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
-        double tagRotation = tagPose.getRotation().getAngle();
-        double angleOffset = Math.atan(yOffset/xOffset);
-        double offset = Math.sqrt(Math.pow(xOffset,2) + Math.pow(yOffset,2));
+        if (LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME)){
+            double farX = 1;
+            double xOffset = 0.67;
+            double yOffset = offCenter.getAsBoolean() ? -0.2 : 0.1;
 
-        double startX = tagPose.getX() + farX*Math.cos(tagRotation);
-        double startY = tagPose.getY() + farX*Math.sin(tagRotation);
-        double endX = tagPose.getX() + offset*Math.cos(tagRotation+angleOffset);
-        double endY = tagPose.getY() + offset*Math.sin(tagRotation+angleOffset);
-        
-        PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(startX, startY, null),
-            new Pose2d(endX, endY, null)
-        );
-        PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
-        newPath.preventFlipping = true;
+            var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+            double tagRotation = tagPose.getRotation().getAngle();
+            double angleOffset = Math.atan(yOffset/xOffset);
+            double offset = Math.sqrt(Math.pow(xOffset,2) + Math.pow(yOffset,2));
 
-        AutoBuilder.pathfindThenFollowPath(
-            newPath,
-            contraints
-        ).schedule();
+            double startX = tagPose.getX() + farX*Math.cos(tagRotation);
+            double startY = tagPose.getY() + farX*Math.sin(tagRotation);
+            double endX = tagPose.getX() + offset*Math.cos(tagRotation+angleOffset);
+            double endY = tagPose.getY() + offset*Math.sin(tagRotation+angleOffset);
+            
+            PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(startX, startY, Rotation2d.fromRadians(angleOffset+tagRotation)),
+                new Pose2d(endX, endY, Rotation2d.fromRadians(angleOffset+tagRotation))
+            );
+
+            SmartDashboard.putNumber("StartX", startX);
+            SmartDashboard.putNumber("StartY", startY);
+            SmartDashboard.putNumber("EndX", endX);
+            SmartDashboard.putNumber("EndY", endY);
+            PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
+            newPath.preventFlipping = true;
+
+            // return AutoBuilder.pathfindThenFollowPath(
+            //     newPath,
+            //     contraints
+            // );
+            return AutoBuilder.pathfindToPose(
+                new Pose2d(endX, endY, Rotation2d.fromRadians(tagRotation+Math.PI)),
+                contraints
+            );
+        }
+        return Commands.none();
     }
 }
