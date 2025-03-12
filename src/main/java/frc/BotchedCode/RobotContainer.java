@@ -4,6 +4,7 @@
 
 package frc.BotchedCode;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -11,7 +12,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -214,7 +218,7 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper()).schedule()));
+        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper())));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -246,21 +250,32 @@ public class RobotContainer {
             TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
         );
     }
-    public static Command defineEndPos(BooleanSupplier offCenter){
+    public static void defineEndPos(BooleanSupplier offCenter){
+        double farX = 1.5;
         double xOffset = 0.67;
         double yOffset = offCenter.getAsBoolean() ? -0.2 : 0.09;
 
         var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
         double tagRotation = tagPose.getRotation().getAngle();
-        double xPos = tagPose.getX()+xOffset*Math.cos(tagRotation)+yOffset*Math.sin(tagRotation);
-        double yPos = tagPose.getY()+xOffset*Math.sin(tagRotation)+yOffset*Math.cos(tagRotation);
+        double angleOffset = Math.atan(yOffset/xOffset);
+        double offset = Math.sqrt(Math.pow(xOffset,2) + Math.pow(yOffset,2));
 
+        double startX = tagPose.getX() + farX*Math.cos(tagRotation);
+        double startY = tagPose.getY() + farX*Math.sin(tagRotation);
+        double endX = tagPose.getX() + offset*Math.cos(tagRotation+angleOffset);
+        double endY = tagPose.getY() + offset*Math.sin(tagRotation+angleOffset);
+        
         PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
-
-        return AutoBuilder.pathfindToPose(
-            new Pose2d(new Translation2d(xPos, yPos), new Rotation2d(tagRotation + Math.PI)),
-            contraints,
-            0.0
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(startX, startY, null),
+            new Pose2d(endX, endY, null)
         );
+        PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
+        newPath.preventFlipping = true;
+
+        AutoBuilder.pathfindThenFollowPath(
+            newPath,
+            contraints
+        ).schedule();
     }
 }
