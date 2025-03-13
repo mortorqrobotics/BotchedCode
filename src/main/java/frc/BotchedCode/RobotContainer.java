@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.PathfindingCommand;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbOut;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
@@ -58,15 +59,10 @@ import frc.BotchedCode.Utils.LimelightHelpers;
 
 public class RobotContainer {
     public static Elevator elevator;
-
     public static Pivot pivot;
-
     public static IntakeCoral intakeCoral;
-
     public static IntakeAlgae intakeAlgae;
-
     public static Barb barb;
-
     public static Candle candle;
 
     private static double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -83,7 +79,7 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final static CommandXboxController controller1 = new CommandXboxController(0);
+    public final static CommandXboxController controller1 = new CommandXboxController(0);
     private final static CommandXboxController controller2 = new CommandXboxController(1);
     private final static CommandXboxController controller3 = new CommandXboxController(2);
     
@@ -98,50 +94,57 @@ public class RobotContainer {
     public RobotContainer() {
 
         elevator = new Elevator();
-
         pivot = new Pivot();
-
         intakeAlgae = new IntakeAlgae();
-
         intakeCoral = new IntakeCoral();
-
         barb = new Barb();
-
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
 
-        NamedCommands.registerCommand("L2Position", Commands.sequence(
+        Command L2Position = Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("L3Position", Commands.sequence(
+        );
+        Command L3Position = Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("L4Position", Commands.sequence(
+        );
+        Command L4Position = Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("RestPosition", Commands.sequence(
+        );
+        Command RestPosition = Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-
-        NamedCommands.registerCommand("ProcessorPosition", Commands.sequence(
+        );
+        Command ProcessorPosition = Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
+        );
 
-        NamedCommands.registerCommand("IntakeAlgae", Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())));
-        NamedCommands.registerCommand("OuttakeAlgae", Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
-        NamedCommands.registerCommand("IntakeCoral", Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
-        NamedCommands.registerCommand("OuttakeCoral", Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
+        Command IntakeAlgae = Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()));
+        Command OuttakeAlgae = Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff()));
+        Command IntakeCoral = Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn()));
+        Command OuttakeCoral = Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff()));
 
-        NamedCommands.registerCommand("Startup", Commands.parallel(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())), Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))), 
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
+        NamedCommands.registerCommand("L2Routine", Commands.sequence(L2Position, OuttakeCoral, RestPosition));
+        NamedCommands.registerCommand("L3Routine", Commands.sequence(L3Position, OuttakeCoral, RestPosition));
+        NamedCommands.registerCommand("L4Routine", Commands.sequence(L4Position, OuttakeCoral, RestPosition));
+        NamedCommands.registerCommand("L3RoutineAlgae", Commands.sequence(L3Position, Commands.parallel(OuttakeCoral, IntakeAlgae), RestPosition));
 
-        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
+        NamedCommands.registerCommand("L2Position", L2Position);
+        NamedCommands.registerCommand("L3Position", L3Position);
+        NamedCommands.registerCommand("L4Position", L4Position);
+        NamedCommands.registerCommand("RestPosition", RestPosition);
+        NamedCommands.registerCommand("ProcessorPosition", ProcessorPosition);
+
+        NamedCommands.registerCommand("IntakeAlgae", IntakeAlgae);
+        NamedCommands.registerCommand("OuttakeAlgae", OuttakeAlgae);
+        NamedCommands.registerCommand("IntakeCoral", IntakeCoral);
+        NamedCommands.registerCommand("OuttakeCoral", OuttakeCoral);
+
+        NamedCommands.registerCommand("Startup", Commands.parallel(IntakeCoral, RestPosition));
+
+        autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
@@ -247,7 +250,8 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands).schedule()).until(controller1.start()));
+        controller1.y().onTrue(new PathfindingCommand(controller1.rightBumper()));
+        //controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands).schedule()).until(controller1.start()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -317,10 +321,10 @@ public class RobotContainer {
             new Pose2d(endX, endY, Rotation2d.fromRadians(angleOffset+tagRotation))
         );
 
-        SmartDashboard.putNumber("StartX", startX);
-        SmartDashboard.putNumber("StartY", startY);
-        SmartDashboard.putNumber("EndX", endX);
-        SmartDashboard.putNumber("EndY", endY);
+        SmartDashboard.putNumber("StartX" + id, startX);
+        SmartDashboard.putNumber("StartY" + id, startY);
+        SmartDashboard.putNumber("EndX" + id, endX);
+        SmartDashboard.putNumber("EndY" + id, endY);
         PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
         newPath.preventFlipping = true;
 

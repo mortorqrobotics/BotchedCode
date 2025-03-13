@@ -5,6 +5,7 @@
 package frc.BotchedCode;
 
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
 
     @Override
   public void robotInit(){
+    PathfindingCommand.warmupCommand().schedule();
     UsbCamera camera = CameraServer.startAutomaticCapture();
     camera.setResolution(640, 360);
     camera.setFPS(30);
