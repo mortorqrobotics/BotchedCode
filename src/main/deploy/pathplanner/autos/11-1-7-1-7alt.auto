@@ -26,19 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "L4Position"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OuttakeCoral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RestPosition"
+            "name": "L4Routine"
           }
         },
         {
@@ -62,19 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "L4Position"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OuttakeCoral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RestPosition"
+            "name": "L4Routine"
           }
         },
         {
@@ -98,19 +74,7 @@
         {
           "type": "named",
           "data": {
-            "name": "L4Position"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OuttakeCoral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RestPosition"
+            "name": "L4Routine"
           }
         }
       ]
