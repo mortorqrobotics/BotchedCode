@@ -4,6 +4,7 @@
 
 package frc.BotchedCode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -17,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -125,7 +127,7 @@ public class RobotContainer {
         ));
 
         NamedCommands.registerCommand("ProcessorPosition", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
+            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         ));
 
@@ -148,6 +150,22 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention
+
+        HashMap<Integer, Command> strafeCommands = new HashMap<Integer, Command>();
+        strafeCommands.put(17, defineEndPos(false, 17));
+        strafeCommands.put(18, defineEndPos(false, 18));
+        strafeCommands.put(19, defineEndPos(false, 19));
+        strafeCommands.put(20, defineEndPos(false, 20));
+        strafeCommands.put(21, defineEndPos(false, 21));
+        strafeCommands.put(22, defineEndPos(false, 22));
+
+        HashMap<Integer, Command> altStrafeCommands = new HashMap<Integer, Command>();
+        altStrafeCommands.put(17, defineEndPos(true, 17));
+        altStrafeCommands.put(18, defineEndPos(true, 18));
+        altStrafeCommands.put(19, defineEndPos(true, 19));
+        altStrafeCommands.put(20, defineEndPos(true, 20));
+        altStrafeCommands.put(21, defineEndPos(true, 21));
+        altStrafeCommands.put(22, defineEndPos(true, 22));
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -217,7 +235,7 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new InstantCommand(()->defineEndPos(controller1.rightBumper()).schedule()).until(controller1.start()));
+        controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands)).until(controller1.start()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -249,45 +267,58 @@ public class RobotContainer {
             TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight
         );
     }
-    public static Command defineEndPos(BooleanSupplier offCenter){
+
+    public static Command getStrafeCommand(BooleanSupplier offCenter, HashMap<Integer, Command> strafeCommands, HashMap<Integer, Command> altStrafeCommands){
 
         if (LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME)){
-            double farX = 1;
-            double xOffset = 0.67;
-            double yOffset = offCenter.getAsBoolean() ? -0.2 : 0.1;
-
-            var tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
-            double tagRotation = tagPose.getRotation().getAngle();
-            double angleOffset = Math.atan(yOffset/xOffset);
-            double offset = Math.sqrt(Math.pow(xOffset,2) + Math.pow(yOffset,2));
-
-            double startX = tagPose.getX() + farX*Math.cos(tagRotation);
-            double startY = tagPose.getY() + farX*Math.sin(tagRotation);
-            double endX = tagPose.getX() + offset*Math.cos(tagRotation+angleOffset);
-            double endY = tagPose.getY() + offset*Math.sin(tagRotation+angleOffset);
-            
-            PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
-            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(startX, startY, Rotation2d.fromRadians(angleOffset+tagRotation)),
-                new Pose2d(endX, endY, Rotation2d.fromRadians(angleOffset+tagRotation))
-            );
-
-            SmartDashboard.putNumber("StartX", startX);
-            SmartDashboard.putNumber("StartY", startY);
-            SmartDashboard.putNumber("EndX", endX);
-            SmartDashboard.putNumber("EndY", endY);
-            PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
-            newPath.preventFlipping = true;
-
-            // return AutoBuilder.pathfindThenFollowPath(
-            //     newPath,
-            //     contraints
-            // );
-            return AutoBuilder.pathfindToPose(
-                new Pose2d(endX, endY, Rotation2d.fromRadians(tagRotation+Math.PI)),
-                contraints
-            );
+            int viewedID = (int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME);
+            Pair<Integer, Integer> blueRange = new Pair<Integer, Integer>(17,22);
+            Pair<Integer, Integer> redRange = new Pair<Integer, Integer>(6,11);
+            if ((viewedID>blueRange.getFirst() && viewedID < blueRange.getSecond()) || (viewedID>redRange.getFirst() && viewedID < redRange.getSecond())){
+                if (offCenter.getAsBoolean()){
+                    return altStrafeCommands.get((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
+                }
+                return strafeCommands.get((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
+            }
         }
         return Commands.none();
+    }
+
+    public static Command defineEndPos(boolean offCenter, int id){
+        double farX = 1;
+        double xOffset = 0.67;
+        double yOffset = offCenter ? -0.2 : 0.1;
+
+        var tagPose = RobotMap.WELDED_FIELD2025.getTagPose(id).get();
+        double tagRotation = tagPose.getRotation().getAngle();
+        double angleOffset = Math.atan(yOffset/xOffset);
+        double offset = Math.sqrt(Math.pow(xOffset,2) + Math.pow(yOffset,2));
+
+        double startX = tagPose.getX() + farX*Math.cos(tagRotation);
+        double startY = tagPose.getY() + farX*Math.sin(tagRotation);
+        double endX = tagPose.getX() + offset*Math.cos(tagRotation+angleOffset);
+        double endY = tagPose.getY() + offset*Math.sin(tagRotation+angleOffset);
+        
+        PathConstraints contraints = new PathConstraints(2, 1, Math.PI, Math.PI*2);
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(startX, startY, Rotation2d.fromRadians(angleOffset+tagRotation)),
+            new Pose2d(endX, endY, Rotation2d.fromRadians(angleOffset+tagRotation))
+        );
+
+        SmartDashboard.putNumber("StartX", startX);
+        SmartDashboard.putNumber("StartY", startY);
+        SmartDashboard.putNumber("EndX", endX);
+        SmartDashboard.putNumber("EndY", endY);
+        PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
+        newPath.preventFlipping = false;
+
+        // return AutoBuilder.pathfindThenFollowPath(
+        //     newPath,
+        //     contraints
+        // );
+        return AutoBuilder.pathfindToPose(
+            new Pose2d(endX, endY, Rotation2d.fromRadians(tagRotation+Math.PI)),
+            contraints
+        );
     }
 }
