@@ -9,6 +9,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -32,10 +33,12 @@ public class Robot extends TimedRobot {
     @Override
   public void robotInit(){
     PathfindingCommand.warmupCommand().schedule();
+    Pose3d tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
     UsbCamera camera = CameraServer.startAutomaticCapture();
     camera.setResolution(640, 360);
     camera.setFPS(30);
     camera.setPixelFormat(PixelFormat.kMJPEG);
+    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 0);
   }
 
   @Override
@@ -43,10 +46,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     //Module Offsets
-    SmartDashboard.putNumber("Mod0 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod1 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod2 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble()));
-    SmartDashboard.putNumber("Mod3 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    // SmartDashboard.putNumber("Mod0 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    // SmartDashboard.putNumber("Mod1 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    // SmartDashboard.putNumber("Mod2 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble()));
+    // SmartDashboard.putNumber("Mod3 Offset", Units.rotationsToDegrees(RobotContainer.drivetrain.getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble()));
     
     SmartDashboard.putNumber("PoseX", RobotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", RobotContainer.drivetrain.getState().Pose.getY());
@@ -70,7 +73,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 1);
+    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 0);
     LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 200);
   }
 
@@ -79,7 +82,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {
-    LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
+    //LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 2);
     LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 0);
   }
 
