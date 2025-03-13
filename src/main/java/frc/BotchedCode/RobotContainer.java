@@ -158,6 +158,12 @@ public class RobotContainer {
         strafeCommands.put(20, defineEndPos(false, 20));
         strafeCommands.put(21, defineEndPos(false, 21));
         strafeCommands.put(22, defineEndPos(false, 22));
+        strafeCommands.put(6, defineEndPos(false, 6));
+        strafeCommands.put(7, defineEndPos(false, 7));
+        strafeCommands.put(8, defineEndPos(false, 8));
+        strafeCommands.put(9, defineEndPos(false, 9));
+        strafeCommands.put(10, defineEndPos(false, 10));
+        strafeCommands.put(11, defineEndPos(false, 11));
 
         HashMap<Integer, Command> altStrafeCommands = new HashMap<Integer, Command>();
         altStrafeCommands.put(17, defineEndPos(true, 17));
@@ -166,6 +172,12 @@ public class RobotContainer {
         altStrafeCommands.put(20, defineEndPos(true, 20));
         altStrafeCommands.put(21, defineEndPos(true, 21));
         altStrafeCommands.put(22, defineEndPos(true, 22));
+        altStrafeCommands.put(6, defineEndPos(true, 6));
+        altStrafeCommands.put(7, defineEndPos(true, 7));
+        altStrafeCommands.put(8, defineEndPos(true, 8));
+        altStrafeCommands.put(9, defineEndPos(true, 9));
+        altStrafeCommands.put(10, defineEndPos(true, 10));
+        altStrafeCommands.put(11, defineEndPos(true, 11));
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -235,7 +247,7 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands)).until(controller1.start()));
+        controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands).schedule()).until(controller1.start()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -274,11 +286,11 @@ public class RobotContainer {
             int viewedID = (int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME);
             Pair<Integer, Integer> blueRange = new Pair<Integer, Integer>(17,22);
             Pair<Integer, Integer> redRange = new Pair<Integer, Integer>(6,11);
-            if ((viewedID>blueRange.getFirst() && viewedID < blueRange.getSecond()) || (viewedID>redRange.getFirst() && viewedID < redRange.getSecond())){
+            if ((viewedID>=blueRange.getFirst() && viewedID <= blueRange.getSecond()) || (viewedID>=redRange.getFirst() && viewedID <= redRange.getSecond())){
                 if (offCenter.getAsBoolean()){
-                    return altStrafeCommands.get((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
+                    return altStrafeCommands.get(viewedID);
                 }
-                return strafeCommands.get((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
+                return strafeCommands.get(viewedID);
             }
         }
         return Commands.none();
@@ -310,7 +322,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("EndX", endX);
         SmartDashboard.putNumber("EndY", endY);
         PathPlannerPath newPath = new PathPlannerPath(waypoints, contraints, null, new GoalEndState(0.0, Rotation2d.fromRadians(tagRotation+Math.PI)));
-        newPath.preventFlipping = false;
+        newPath.preventFlipping = true;
 
         // return AutoBuilder.pathfindThenFollowPath(
         //     newPath,
