@@ -33,8 +33,9 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
-import frc.BotchedCode.Commands.PathfindingCommand;
-import frc.BotchedCode.Commands.PathfindingCommandAlt;
+import frc.BotchedCode.Commands.Pathfinding.PathfindToNearest;
+import frc.BotchedCode.Commands.Pathfinding.PathfindingCommand;
+import frc.BotchedCode.Commands.Pathfinding.PathfindingCommandAlt;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.Barb;
@@ -195,32 +196,20 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        controller1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // reset the field-centric heading on start button press
+        controller1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         controller2.a().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
         controller2.b().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
         controller2.y().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
-        //controller2.x().onTrue(Positions[3]);
+        controller2.x().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_PROCESSOR_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))));
         controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
-
-        //controller2.x().whileTrue(new InstantCommand(()->elevator.down()));
-        //controller2.y().whileTrue(new InstantCommand(()-> elevator.up()));
-
-
-        //Controls for intakes without candle
-        // controller2.leftBumper().onTrue(new IntakeAlgaeIn(intakeAlgae)); 
-        // controller2.rightBumper().onTrue(new IntakeAlgaeOut(intakeAlgae));
-
-        // controller2.leftTrigger().onTrue(new IntakeCoralIn(intakeCoral)); 
-        // controller2.rightTrigger().onTrue(new IntakeCoralOut(intakeCoral));
 
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
         controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
         controller2.povRight().whileTrue(new ManualPivotUp(pivot));
         controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
 
-        //Controls with candle
         controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
         controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
         controller2.leftTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
@@ -228,6 +217,13 @@ public class RobotContainer {
 
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
+
+        Command driveToNearestReefSideCommandLeft = new PathfindToNearest(drivetrain,
+        true);
+        Command driveToNearestReefSideCommandRight = new PathfindToNearest(drivetrain,
+            false);
+        controller1.leftBumper().onTrue(driveToNearestReefSideCommandLeft);
+        controller1.rightBumper().onTrue(driveToNearestReefSideCommandRight);
 
         controller1.y().and(controller1.rightBumper().negate()).onTrue(new PathfindingCommand());
         controller1.y().and(controller1.rightBumper()).onTrue(new PathfindingCommandAlt());
@@ -239,14 +235,12 @@ public class RobotContainer {
     
     public static double getRobotSpeed() {
         
-        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.3 : 1.0;
-    // return 0.7;
+        return controller1.leftTrigger().getAsBoolean() ? 0.3 : 1.0;
     }
 
     public static double getRobotYawSpeed() {
         
-        return controller1.getLeftTriggerAxis() >= 0.25 ? 0.3 : 1;
-    // return 0.7;
+        return controller1.leftTrigger().getAsBoolean() ? 0.3 : 1;
     }
 
     public Command getAutonomousCommand() {

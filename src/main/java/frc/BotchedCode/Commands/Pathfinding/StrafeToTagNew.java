@@ -1,4 +1,4 @@
-package frc.BotchedCode.Commands;
+package frc.BotchedCode.Commands.Pathfinding;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

@@ -1,4 +1,4 @@
-package frc.BotchedCode.Commands;
+package frc.BotchedCode.Commands.Pathfinding;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -11,7 +11,7 @@ import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
-public class PathfindingCommand extends Command {    
+public class PathfindingCommandAlt extends Command {    
 
     /**
      * Align robot with the target using the limelight
@@ -19,13 +19,13 @@ public class PathfindingCommand extends Command {
      * @param drivetrainSubsystem
      * @param limelight
      */
-    public PathfindingCommand() { }
+    public PathfindingCommandAlt() { }
 
     @Override
     public void initialize(){
         //double farX = 1;
         double xOffset = 0.67;
-        double yOffset = 0.1;
+        double yOffset = -0.2;
 
         if (LimelightHelpers.getTV(RobotMap.LIMELIGHT_NAME)){
             Pose3d tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
