@@ -35,6 +35,7 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
+import frc.BotchedCode.Commands.Pathfinding.PathfindToID;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearest;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
@@ -91,7 +92,6 @@ public class RobotContainer {
         intakeCoral = new IntakeCoral();
         barb = new Barb();
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
-
 
         NamedCommands.registerCommand("L2Routine", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
@@ -153,6 +153,20 @@ public class RobotContainer {
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
+
+        NamedCommands.registerCommand("Strafe To 6", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
+        NamedCommands.registerCommand("Strafe To 7", new PathfindToID(drivetrain, false,DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
+        NamedCommands.registerCommand("Strafe To 8", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 8 : 17));
+        NamedCommands.registerCommand("Strafe To 9", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 9 :22));
+        NamedCommands.registerCommand("Strafe To 10", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 10 : 21));
+        NamedCommands.registerCommand("Strafe To 11", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 11 : 20));
+        
+        NamedCommands.registerCommand("Strafe To alt6", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
+        NamedCommands.registerCommand("Strafe To alt7", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
+        NamedCommands.registerCommand("Strafe To alt8", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 8 : 17));
+        NamedCommands.registerCommand("Strafe To alt9", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 9 :22));
+        NamedCommands.registerCommand("Strafe To alt10", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 10 : 21));
+        NamedCommands.registerCommand("Strafe To alt11", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 11 : 20));
 
         autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);

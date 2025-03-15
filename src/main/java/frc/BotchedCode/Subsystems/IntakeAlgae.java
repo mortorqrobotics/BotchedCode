@@ -57,7 +57,7 @@ public class IntakeAlgae extends SubsystemBase {
     }
 
     public void end(){
-        leftIntakeAlgae.set(0);
-        rightIntakeAlgae.set(0);
+        leftIntakeAlgae.set(-0.05);
+        rightIntakeAlgae.set(0.05);
     }
 }
