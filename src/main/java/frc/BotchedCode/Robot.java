@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Viewed Tag", LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
 
     if (kUseLimelight) {
-      
+
       var driveState = RobotContainer.drivetrain.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       
@@ -67,14 +67,6 @@ public class Robot extends TimedRobot {
       // catch (Exception e) {
       //   System.out.print(e);
       // }
-
-      try {  
-        RobotContainer.gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0); // this is esentually directly from the external IMU since we barely trust vision angle
-        
-      } 
-      catch (Exception e) {
-        System.out.print(e);
-      }
 
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
