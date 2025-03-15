@@ -98,7 +98,7 @@ public class PathfindToID extends Command {
     }
 
     Integer aprilTagNum = id;
-    Pose2d closestPose = AprilTagPositions.WELDED_APRIL_TAG_POSITIONS.get(id);
+    Pose2d closestPose = aprilTagsToAlignTo.get(id);
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
         -0.64);

@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "to 11"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -17,7 +23,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Strafe To 9"
+                  "name": "Strafe To 11"
                 }
               }
             ]
@@ -32,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "9 to 2"
+            "pathName": "11 to 1"
           }
         },
         {
@@ -44,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 to 7"
+            "pathName": "1 to 7"
           }
         },
         {
@@ -62,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 to 2"
+            "pathName": "7 to 1"
           }
         },
         {
@@ -74,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 to 7alt"
+            "pathName": "1 to 7alt"
           }
         },
         {
