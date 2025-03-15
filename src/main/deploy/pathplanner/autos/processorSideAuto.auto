@@ -5,28 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "to 9"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Startup"
+                  "pathName": "to 9"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Strafe To 9"
+                  "name": "Startup"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Strafe To 9"
           }
         },
         {
