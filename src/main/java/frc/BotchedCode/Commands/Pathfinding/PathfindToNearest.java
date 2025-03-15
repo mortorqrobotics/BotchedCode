@@ -61,7 +61,7 @@ public class PathfindToNearest extends Command {
       );
       pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
-      fullPath.until(RobotContainer.controller1.a()).schedule();
+      fullPath.until(RobotContainer.controller1.b()).schedule();
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
     }
