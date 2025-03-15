@@ -160,7 +160,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Strafe To 9", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 9 :22));
         NamedCommands.registerCommand("Strafe To 10", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 10 : 21));
         NamedCommands.registerCommand("Strafe To 11", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 11 : 20));
-        
+
         NamedCommands.registerCommand("Strafe To alt6", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
         NamedCommands.registerCommand("Strafe To alt7", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
         NamedCommands.registerCommand("Strafe To alt8", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 8 : 17));
