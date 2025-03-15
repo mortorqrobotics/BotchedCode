@@ -63,7 +63,7 @@ public class PathfindToID extends Command {
           new GoalEndState(0.0, closestAprilTagPose.getRotation()));
       pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
-      fullPath.until(RobotContainer.controller1.b()).schedule();
+      fullPath.schedule();
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
     }
@@ -85,7 +85,7 @@ public class PathfindToID extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return fullPath.isFinished();
   }
 
   private Pose2d getClosestReefAprilTagPose() {
