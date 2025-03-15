@@ -16,7 +16,6 @@ import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -76,7 +75,7 @@ public class RobotContainer {
     private final static CommandXboxController controller3 = new CommandXboxController(2);
     
     public final static CommandSwerveDrivetrain drivetrain = createDrivetrain();
-    public static Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
+    public static Pigeon2 gyro;
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -85,12 +84,14 @@ public class RobotContainer {
 
     public RobotContainer() {
 
+        gyro = new Pigeon2(RobotMap.PIGEON_ID, "1515Canivore");
         elevator = new Elevator();
         pivot = new Pivot();
         intakeAlgae = new IntakeAlgae();
         intakeCoral = new IntakeCoral();
         barb = new Barb();
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
+
 
         NamedCommands.registerCommand("L2Routine", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
@@ -155,7 +156,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        SmartDashboard.putData("Reset Gyro", new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
+        SmartDashboard.putData("Reset Gyro", Commands.sequence(new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0)).ignoringDisable(true), new InstantCommand(()->drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0))).ignoringDisable(true)));
 
         configureBindings();
     }
@@ -172,6 +173,8 @@ public class RobotContainer {
                     .withRotationalRate(-controller1.getRightX() * MaxAngularRate * getRobotYawSpeed()) // Drive counterclockwise with negative X (left)
             )
         );
+
+        //controller1.back().onTrue( new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
 
         controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
         controller1.b().whileTrue(drivetrain.applyRequest(() ->

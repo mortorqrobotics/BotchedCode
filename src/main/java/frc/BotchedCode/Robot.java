@@ -7,6 +7,7 @@ package frc.BotchedCode;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("PoseX", RobotContainer.drivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("PoseY", RobotContainer.drivetrain.getState().Pose.getY());
     SmartDashboard.putNumber("Yaw", RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("TreuYaw", RobotContainer.gyro.getYaw().getValueAsDouble());
 
     SmartDashboard.putNumber("Viewed Tag", LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
 
@@ -97,7 +99,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     try {  
-      RobotContainer.gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0); // this is esentually directly from the external IMU since we barely trust vision angle
+      RobotContainer.gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0); // this is esentually directly from the external IMU since we barely trust vision angle
+      RobotContainer.drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0));
     } 
     catch (Exception e) {
       System.out.print(e);

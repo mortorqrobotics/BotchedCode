@@ -111,18 +111,18 @@ public class PathfindToNearest extends Command {
     }
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -0.67);
+        -0.64);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.2);
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.22);
     } else {
       leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.1);
     }
 
     if (List.of(11, 10, 9, 22, 21, 20).contains(aprilTagNum)) {
       if (isLeftBumper) {
-        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.2);
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.22);
       } else {
         leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.1);
       }
