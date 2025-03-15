@@ -9,9 +9,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.RobotContainer;
+import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
-public class PathfindingCommandAlt extends Command {    
+public class PathfindingCommandAlt extends Command {   
+    private CommandSwerveDrivetrain drivetrain; 
 
     /**
      * Align robot with the target using the limelight
@@ -19,7 +21,10 @@ public class PathfindingCommandAlt extends Command {
      * @param drivetrainSubsystem
      * @param limelight
      */
-    public PathfindingCommandAlt() { }
+    public PathfindingCommandAlt(CommandSwerveDrivetrain drivetrain) { 
+        this.drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
 
     @Override
     public void initialize(){

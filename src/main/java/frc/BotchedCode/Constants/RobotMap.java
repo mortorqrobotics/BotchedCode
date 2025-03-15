@@ -34,9 +34,9 @@ public class RobotMap {
     public static final double L3_HEIGHT = L2_HEIGHT+10; //TODO
     public static final double L4_HEIGHT = 33.75; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
-    public static final double REST_HEIGHT = 1.7; //TODO
+    public static final double REST_HEIGHT = 2.5; //TODO
     public static final double PROCESSOR_HEIGHT = 4; //TODO
-    public static final double L4_PROCESSOR_HEIGHT = 31.75; //TODO
+    public static final double L4_PROCESSOR_HEIGHT = 29.25; //TODO
     public static final double REST_HEIGHT_LIMIT = 1.57; //TODO
 
     public static final int ELEVATOR_ID = 21; //TODO

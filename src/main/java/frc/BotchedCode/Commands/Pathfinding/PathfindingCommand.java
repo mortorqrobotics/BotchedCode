@@ -9,17 +9,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.RobotContainer;
+import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 import frc.BotchedCode.Utils.LimelightHelpers;
 
 public class PathfindingCommand extends Command {    
-
+    private CommandSwerveDrivetrain drivetrain;
     /**
      * Align robot with the target using the limelight
      * 
      * @param drivetrainSubsystem
      * @param limelight
      */
-    public PathfindingCommand() { }
+    public PathfindingCommand(CommandSwerveDrivetrain drivetrain) { 
+        drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
 
     @Override
     public void initialize(){
@@ -43,7 +47,8 @@ public class PathfindingCommand extends Command {
             //     new Pose2d(startX, startY, Rotation2d.fromRadians(angleOffset+tagRotation)),
             //     new Pose2d(endX, endY, Rotation2d.fromRadians(angleOffset+tagRotation))
             // );
-
+            
+            //Commands.defer(()-> 
             AutoBuilder.pathfindToPose(
                 new Pose2d(endX, endY, Rotation2d.fromRadians(tagRotation+Math.PI)),
                 contraints

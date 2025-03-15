@@ -34,8 +34,6 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearest;
-import frc.BotchedCode.Commands.Pathfinding.PathfindingCommand;
-import frc.BotchedCode.Commands.Pathfinding.PathfindingCommandAlt;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.Barb;
@@ -225,8 +223,8 @@ public class RobotContainer {
         controller1.leftBumper().onTrue(driveToNearestReefSideCommandLeft);
         controller1.rightBumper().onTrue(driveToNearestReefSideCommandRight);
 
-        controller1.y().and(controller1.rightBumper().negate()).onTrue(new PathfindingCommand());
-        controller1.y().and(controller1.rightBumper()).onTrue(new PathfindingCommandAlt());
+        //controller1.y().and(controller1.rightTrigger().negate()).onTrue(new PathfindingCommand(drivetrain));
+        //controller1.y().and(controller1.rightTrigger()).onTrue(new PathfindingCommandAlt(drivetrain));
         //controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands).schedule()).until(controller1.start()));
 
         //drivetrain.registerTelemetry(logger::telemeterize);

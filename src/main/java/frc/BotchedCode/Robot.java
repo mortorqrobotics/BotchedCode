@@ -7,11 +7,9 @@ package frc.BotchedCode;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.PixelFormat;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,11 +31,11 @@ public class Robot extends TimedRobot {
     @Override
   public void robotInit(){
     PathfindingCommand.warmupCommand().schedule();
-    Pose3d tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
-    UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(640, 360);
-    camera.setFPS(30);
-    camera.setPixelFormat(PixelFormat.kMJPEG);
+    // tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
+    // UsbCamera camera = CameraServer.startAutomaticCapture();
+    // camera.setResolution(640, 360);
+    // camera.setFPS(30);
+    // camera.setPixelFormat(PixelFormat.kMJPEG);
     LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 0);
   }
 
@@ -58,8 +56,17 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Viewed Tag", LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME));
 
     if (kUseLimelight) {
+      
       var driveState = RobotContainer.drivetrain.getState();
-      double headingDeg = driveState.Pose.getRotation().getDegrees(); // this is esentually directly from the external IMU since we barely trust vision angle
+      double headingDeg = driveState.Pose.getRotation().getDegrees();
+      
+      try {  
+        headingDeg += DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0; // this is esentually directly from the external IMU since we barely trust vision angle
+      } 
+      catch (Exception e) {
+        System.out.print(e);
+      }
+
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
       //assuming limelight starts facing red wall (MUST KNOW STARTING ANGLE) TODO
@@ -74,7 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 0);
-    LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 200);
+    LimelightHelpers.SetThrottle(RobotMap.LIMELIGHT_NAME, 200 );
   }
 
   @Override
@@ -88,6 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    RobotContainer.drivetrain.runOnce(() -> RobotContainer.drivetrain.seedFieldCentric()).schedule();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

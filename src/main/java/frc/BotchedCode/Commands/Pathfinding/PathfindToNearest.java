@@ -19,6 +19,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
+import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -60,7 +61,7 @@ public class PathfindToNearest extends Command {
       );
       pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
-      fullPath.schedule();
+      fullPath.until(RobotContainer.controller1.a()).schedule();
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
     }
@@ -109,14 +110,22 @@ public class PathfindToNearest extends Command {
       }
     }
 
-    double xOffset = 0.67;
-    double yOffset = isLeftBumper ? 0.2 : -0.1;
-
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -xOffset);
-    Pose2d leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 180, yOffset);
+        -0.67);
+
+    Pose2d leftOrRightOfAprilTag;
+    if (isLeftBumper) {
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.2);
+    } else {
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.1);
+    }
+
     if (List.of(11, 10, 9, 22, 21, 20).contains(aprilTagNum)) {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 180, -yOffset);
+      if (isLeftBumper) {
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.2);
+      } else {
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.1);
+      }
     }
 
     return leftOrRightOfAprilTag;
