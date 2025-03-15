@@ -17,16 +17,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Startup"
+                  "name": "RestPosition"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Strafe To 9"
           }
         },
         {
@@ -56,12 +50,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Strafe To 7"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "L4Routine"
           }
         },
@@ -81,12 +69,6 @@
           "type": "path",
           "data": {
             "pathName": "2 to 7alt"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Strafe To alt7"
           }
         },
         {

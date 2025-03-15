@@ -28,9 +28,10 @@ public class PathfindToNearest extends Command {
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
   private double maxLinAccel = 2.0;
-  private double maxLinVel = 2.0;
+  private double maxLinVel = 3.0;
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
+  private int timer;
 
   /** Creates a new PathfindToNearest. */
   public PathfindToNearest(CommandSwerveDrivetrain drive, boolean isLeftBumper) {
@@ -44,6 +45,7 @@ public class PathfindToNearest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer = 0;
     Pose2d closestAprilTagPose = getClosestReefAprilTagPose();
     Command pathfindPath = AutoBuilder.pathfindToPose(
       translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
@@ -70,6 +72,7 @@ public class PathfindToNearest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    timer ++;
   }
 
   // Called once the command ends or is interrupted.

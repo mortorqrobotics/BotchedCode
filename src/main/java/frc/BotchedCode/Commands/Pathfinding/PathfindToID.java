@@ -16,9 +16,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
-import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -31,6 +31,7 @@ public class PathfindToID extends Command {
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
   private int id;
+  private int timer;
 
   /** Creates a new PathfindToNearest. */
   public PathfindToID(CommandSwerveDrivetrain drive, boolean isLeftBumper, int id) {
@@ -45,6 +46,7 @@ public class PathfindToID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer = 0;
     Pose2d closestAprilTagPose = getClosestReefAprilTagPose();
     Command pathfindPath = AutoBuilder.pathfindToPose(
         translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
@@ -72,6 +74,7 @@ public class PathfindToID extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    timer ++;
   }
 
   // Called once the command ends or is interrupted.
@@ -85,7 +88,8 @@ public class PathfindToID extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return fullPath.isFinished();
+    SmartDashboard.putBoolean("Path Finished", fullPath.isFinished());
+    return fullPath.isFinished() || timer > 80;
   }
 
   private Pose2d getClosestReefAprilTagPose() {

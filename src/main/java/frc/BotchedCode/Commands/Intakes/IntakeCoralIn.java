@@ -5,6 +5,7 @@ import frc.BotchedCode.Subsystems.IntakeCoral;
 
 public class IntakeCoralIn extends Command {
 
+   
     private int initialCount;
     private int pickupCount;
     private IntakeCoral intakeCoral;
@@ -18,6 +19,7 @@ public class IntakeCoralIn extends Command {
     public void initialize(){
         initialCount = 0;
         pickupCount = 0;
+       
     }
 
     @Override
@@ -30,6 +32,7 @@ public class IntakeCoralIn extends Command {
             pickupCount--;
         }
         intakeCoral.in();
+       
     }
 
     @Override
