@@ -16,6 +16,9 @@ import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -152,6 +155,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        SmartDashboard.putData("Reset Gyro", new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
 
         configureBindings();
     }
