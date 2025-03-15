@@ -71,7 +71,7 @@ public class RobotMap {
     public static final double INTAKECORAL_SPEED = 0.3;//TODO
 
 
-    public static final double BARB_SPEED = 0.4;//TODO 
+    public static final double BARB_SPEED = 0.3;//TODO 
     public static final int BARB_ID = 29;//TODO 
 
 
