@@ -68,6 +68,14 @@ public class Robot extends TimedRobot {
       //   System.out.print(e);
       // }
 
+      try {  
+        RobotContainer.gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0); // this is esentually directly from the external IMU since we barely trust vision angle
+        
+      } 
+      catch (Exception e) {
+        System.out.print(e);
+      }
+
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
       //assuming limelight starts facing red wall (MUST KNOW STARTING ANGLE) Todo
@@ -98,7 +106,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     try {  
       RobotContainer.gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0); // this is esentually directly from the external IMU since we barely trust vision angle
-      
     } 
     catch (Exception e) {
       System.out.print(e);
