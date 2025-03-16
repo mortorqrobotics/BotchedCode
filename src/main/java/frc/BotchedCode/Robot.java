@@ -7,8 +7,11 @@ package frc.BotchedCode;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -33,10 +36,10 @@ public class Robot extends TimedRobot {
   public void robotInit(){
     PathfindingCommand.warmupCommand().schedule();
     // tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
-    // UsbCamera camera = CameraServer.startAutomaticCapture();
-    // camera.setResolution(640, 360);
-    // camera.setFPS(30);
-    // camera.setPixelFormat(PixelFormat.kMJPEG);
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(640/2, 360/2);
+    camera.setFPS(30);
+    camera.setPixelFormat(PixelFormat.kMJPEG);
     LimelightHelpers.SetIMUMode(RobotMap.LIMELIGHT_NAME, 0);
   }
 

@@ -14,7 +14,7 @@ public class Barb extends SubsystemBase {
     }
 
     public void in(){
-        if (barb.getPosition().getValueAsDouble() > -20){
+        if (barb.getPosition().getValueAsDouble() > -204){
             barb.set(-RobotMap.BARB_SPEED);
         }
         else{
