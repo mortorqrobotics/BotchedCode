@@ -9,6 +9,7 @@ public class Barb extends SubsystemBase {
     
     private final TalonFX barb;
 
+    
     public Barb(){
         barb = new TalonFX(RobotMap.BARB_ID, "1515Canivore");
     }
@@ -31,4 +32,10 @@ public class Barb extends SubsystemBase {
         barb.set(0);
         
     }
+
+    public void ignoreLimitIn(){
+        barb.set(-RobotMap.BARB_SPEED);
+    }
+
+   
 }

@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.Barb.BarbIn;
+import frc.BotchedCode.Commands.Barb.BarbInIgnoreLimit;
 import frc.BotchedCode.Commands.Barb.BarbOut;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeOut;
@@ -193,8 +194,8 @@ public class RobotContainer {
         );
 
         //controller1.back().onTrue( new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
-
-        controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        controller1.a().whileTrue(new BarbInIgnoreLimit(barb));
+        //controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
         // controller1.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
         // ));
