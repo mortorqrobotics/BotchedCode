@@ -36,7 +36,8 @@ import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToID;
-import frc.BotchedCode.Commands.Pathfinding.PathfindToNearest;
+import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestReef;
+import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestStation;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
 import frc.BotchedCode.Subsystems.Barb;
@@ -100,6 +101,7 @@ public class RobotContainer {
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
+
         NamedCommands.registerCommand("L3Routine", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
@@ -107,6 +109,7 @@ public class RobotContainer {
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
+
         NamedCommands.registerCommand("L4Routine", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
@@ -114,6 +117,7 @@ public class RobotContainer {
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
+
         NamedCommands.registerCommand("L3RoutineAlgae", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
@@ -191,9 +195,9 @@ public class RobotContainer {
         //controller1.back().onTrue( new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
 
         controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        controller1.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
-        ));
+        // controller1.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
+        // ));
         
         controller1.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -237,18 +241,14 @@ public class RobotContainer {
         controller1.x().whileTrue(new BarbIn(barb));
         controller3.y().whileTrue(new BarbOut(barb));
 
-        Command driveToNearestReefSideCommandLeft = new PathfindToNearest(drivetrain,
-        true);
-        Command driveToNearestReefSideCommandRight = new PathfindToNearest(drivetrain,
-            false);
-        controller1.leftBumper().onTrue(driveToNearestReefSideCommandLeft);
-        controller1.rightBumper().onTrue(driveToNearestReefSideCommandRight);
+        Command driveToNearestReefSideCommandLeft = new PathfindToNearestReef(drivetrain, true);
+        Command driveToNearestReefSideCommandRight = new PathfindToNearestReef(drivetrain, false);
+        Command driveToNearestStationSideCommand = new PathfindToNearestStation(drivetrain);
+        controller1.leftBumper().onTrue(driveToNearestReefSideCommandLeft.until(controller1.b()));
+        controller1.rightBumper().onTrue(driveToNearestReefSideCommandRight.until(controller1.b()));
+        controller1.rightTrigger().onTrue(driveToNearestStationSideCommand.until(controller1.b()));
 
-        //controller1.y().and(controller1.rightTrigger().negate()).onTrue(new PathfindingCommand(drivetrain));
-        //controller1.y().and(controller1.rightTrigger()).onTrue(new PathfindingCommandAlt(drivetrain));
-        //controller1.y().onTrue(new InstantCommand(()->getStrafeCommand(controller1.rightBumper(), strafeCommands, altStrafeCommands).schedule()).until(controller1.start()));
-
-        //drivetrain.registerTelemetry(logger::telemeterize);
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
     
     
