@@ -111,10 +111,9 @@ public class RobotContainer {
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
 
-        NamedCommands.registerCommand("L4Routine", Commands.sequence(Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ), Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(
+        NamedCommands.registerCommand("L4Routine", Commands.sequence(
+            Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint()))
+        , Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
@@ -223,10 +222,10 @@ public class RobotContainer {
         // reset the field-centric heading on start button press
         controller1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        controller2.a().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)))); //TODO
-        controller2.b().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))));
-        controller2.y().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))));
-        controller2.x().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_PROCESSOR_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))));
+        controller2.a().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint()))); //TODO
+        controller2.b().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint())));
+        controller2.y().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint())));
+        controller2.x().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_PROCESSOR_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))));
         controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
 
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));

@@ -109,7 +109,7 @@ public class PathfindToNearestReef extends Command {
     }
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -0.64);
+        -0.65);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {

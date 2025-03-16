@@ -2,6 +2,7 @@ package frc.BotchedCode.Subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.BotchedCode.Constants.RobotMap;
 
@@ -35,6 +36,11 @@ public class Barb extends SubsystemBase {
 
     public void ignoreLimitIn(){
         barb.set(-RobotMap.BARB_SPEED);
+    }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Barb encoder", barb.getPosition().getValueAsDouble());
     }
 
    
