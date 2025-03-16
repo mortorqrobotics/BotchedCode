@@ -5,7 +5,6 @@
 package frc.BotchedCode.Commands.Pathfinding;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -108,7 +107,7 @@ public class PathfindToNearestStation extends Command {
     }
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -0.01);
+        -0.45);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {
