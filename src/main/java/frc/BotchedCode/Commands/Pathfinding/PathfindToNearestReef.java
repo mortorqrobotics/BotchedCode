@@ -19,11 +19,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
-import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PathfindToNearest extends Command {
+public class PathfindToNearestReef extends Command {
   private Command fullPath;
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
@@ -31,10 +30,9 @@ public class PathfindToNearest extends Command {
   private double maxLinVel = 3.0;
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
-  private int timer;
 
   /** Creates a new PathfindToNearest. */
-  public PathfindToNearest(CommandSwerveDrivetrain drive, boolean isLeftBumper) {
+  public PathfindToNearestReef(CommandSwerveDrivetrain drive, boolean isLeftBumper) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     this.isLeftBumper = isLeftBumper;
@@ -45,7 +43,6 @@ public class PathfindToNearest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = 0;
     Pose2d closestAprilTagPose = getClosestReefAprilTagPose();
     Command pathfindPath = AutoBuilder.pathfindToPose(
       translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
@@ -63,7 +60,7 @@ public class PathfindToNearest extends Command {
       );
       pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
-      fullPath.until(RobotContainer.controller1.b()).schedule();
+      fullPath.schedule();
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
     }
@@ -71,9 +68,7 @@ public class PathfindToNearest extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    timer ++;
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

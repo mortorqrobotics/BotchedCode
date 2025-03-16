@@ -35,7 +35,6 @@ public class Robot extends TimedRobot {
     @Override
   public void robotInit(){
     PathfindingCommand.warmupCommand().schedule();
-    // tagPose = RobotMap.WELDED_FIELD2025.getTagPose((int) LimelightHelpers.getFiducialID(RobotMap.LIMELIGHT_NAME)).get();
     UsbCamera camera = CameraServer.startAutomaticCapture();
     camera.setResolution(640/2, 360/2);
     camera.setFPS(30);
@@ -108,7 +107,6 @@ public class Robot extends TimedRobot {
     catch (Exception e) {
       System.out.print(e);
     }
-    //RobotContainer.drivetrain.runOnce(() -> RobotContainer.drivetrain.seedFieldCentric()).schedule();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

@@ -77,7 +77,16 @@ public final class AprilTagPositions {
                 WELDED_BLUE_CORAL_APRIL_TAG_POSITIONS.put(21, WELDED_APRIL_TAG_POSITIONS.get(21));
                 WELDED_BLUE_CORAL_APRIL_TAG_POSITIONS.put(22, WELDED_APRIL_TAG_POSITIONS.get(22));
         }
-
+        public static final HashMap<Integer, Pose2d> WELDED_RED_STATION_APRIL_TAG_POSITIONS = new HashMap<>();
+        static {
+                WELDED_RED_STATION_APRIL_TAG_POSITIONS.put(1, WELDED_APRIL_TAG_POSITIONS.get(1));
+                WELDED_RED_STATION_APRIL_TAG_POSITIONS.put(2, WELDED_APRIL_TAG_POSITIONS.get(2));
+        }
+        public static final HashMap<Integer, Pose2d> WELDED_BLUE_STATION_APRIL_TAG_POSITIONS = new HashMap<>();
+        static {
+                WELDED_BLUE_STATION_APRIL_TAG_POSITIONS.put(12, WELDED_APRIL_TAG_POSITIONS.get(12));
+                WELDED_BLUE_STATION_APRIL_TAG_POSITIONS.put(13, WELDED_APRIL_TAG_POSITIONS.get(13));
+        }
         public static final HashMap<Integer, Pose2d> ANDYMARK_APRIL_TAG_POSITIONS = new HashMap<>();
         static {
                 ANDYMARK_APRIL_TAG_POSITIONS.put(1,
