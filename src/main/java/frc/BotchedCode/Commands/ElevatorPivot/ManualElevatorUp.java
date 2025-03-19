@@ -1,4 +1,4 @@
-package frc.BotchedCode.Commands.ManualElevatorPivot;
+package frc.BotchedCode.Commands.ElevatorPivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Subsystems.Elevator;

@@ -28,14 +28,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbInIgnoreLimit;
 import frc.BotchedCode.Commands.Barb.BarbOut;
+import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorDown;
+import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorUp;
+import frc.BotchedCode.Commands.ElevatorPivot.ManualPivotDown;
+import frc.BotchedCode.Commands.ElevatorPivot.ManualPivotUp;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoElevatorPivot;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoScoreRoutine;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralIn;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralOut;
-import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorDown;
-import frc.BotchedCode.Commands.ManualElevatorPivot.ManualElevatorUp;
-import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotDown;
-import frc.BotchedCode.Commands.ManualElevatorPivot.ManualPivotUp;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToID;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestReef;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestStation;
@@ -95,29 +97,6 @@ public class RobotContainer {
         barb = new Barb();
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
 
-        NamedCommands.registerCommand("L2Routine", Commands.sequence(Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ), Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
-
-        NamedCommands.registerCommand("L3Routine", Commands.sequence(Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ), Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
-
-        NamedCommands.registerCommand("L4Routine", Commands.sequence(
-            Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint()))
-        , Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
-
         NamedCommands.registerCommand("L3RoutineAlgae", Commands.sequence(Commands.sequence(
             Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
@@ -126,37 +105,22 @@ public class RobotContainer {
             new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
         )));
 
-        NamedCommands.registerCommand("L2Position", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("L3Position", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("L4Position", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("RestPosition", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
-        NamedCommands.registerCommand("ProcessorPosition", Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ));
+        NamedCommands.registerCommand("L2Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L2"));
+        NamedCommands.registerCommand("L3Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L3"));
+        NamedCommands.registerCommand("L4Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L4"));
 
-        NamedCommands.registerCommand("IntakeAlgae", Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn())));
-        NamedCommands.registerCommand("OuttakeAlgae", Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
-        NamedCommands.registerCommand("IntakeCoral", Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
-        NamedCommands.registerCommand("OuttakeCoral", Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
+        NamedCommands.registerCommand("L2Position", new AutoElevatorPivot(elevator, pivot, "L2"));
+        NamedCommands.registerCommand("L3Position", new AutoElevatorPivot(elevator, pivot, "L3"));
+        NamedCommands.registerCommand("L4Position", new AutoElevatorPivot(elevator, pivot, "L4"));
+        NamedCommands.registerCommand("RestPosition", new AutoElevatorPivot(elevator, pivot, "Rest"));
+        NamedCommands.registerCommand("ProcessorPosition", new AutoElevatorPivot(elevator, pivot, "Processor"));
 
-        NamedCommands.registerCommand("Startup", Commands.parallel(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())), 
-        Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
+        NamedCommands.registerCommand("IntakeAlgae", new IntakeAlgaeIn(intakeAlgae));
+        NamedCommands.registerCommand("OuttakeAlgae", new IntakeAlgaeOut(intakeAlgae));
+        NamedCommands.registerCommand("IntakeCoral", new IntakeCoralIn(intakeCoral));
+        NamedCommands.registerCommand("OuttakeCoral", new IntakeCoralOut(intakeCoral));
+
+        NamedCommands.registerCommand("Startup", Commands.parallel(new IntakeCoralIn(intakeCoral), new AutoElevatorPivot(elevator, pivot, "Rest")));
 
         NamedCommands.registerCommand("Strafe To 6", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
         NamedCommands.registerCommand("Strafe To 7", new PathfindToID(drivetrain, false,DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
@@ -193,12 +157,12 @@ public class RobotContainer {
         );
 
         //controller1.back().onTrue( new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 180: 0)));
-        controller1.a().whileTrue(new BarbInIgnoreLimit(barb));
         //controller1.a().whileTrue(drivetrain.applyRequest(() -> brake));
         // controller1.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-controller1.getLeftY(), -controller1.getLeftX()))
         // ));
         
+        //robot centric d-pad
         controller1.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
@@ -212,41 +176,47 @@ public class RobotContainer {
             forwardStraight.withVelocityX(0).withVelocityY(0.5))
         );
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
         // reset the field-centric heading on start button press
         controller1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        controller2.a().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L2_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint()))); //TODO
-        controller2.b().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint())));
-        controller2.y().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_HEIGHT)),new WaitUntilCommand(() -> elevator.atSetpoint()),  new InstantCommand(()-> pivot.setSetpoint(RobotMap.L4_ANGLE)), new WaitUntilCommand(() -> pivot.atSetpoint())));
-        controller2.x().onTrue(Commands.sequence(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L4_PROCESSOR_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))));
-        controller2.start().onTrue(Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE)))); //TODO
-
-        controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
-        controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
-        controller2.povRight().whileTrue(new ManualPivotUp(pivot));
-        controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
-
-        controller2.leftBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))); 
-        controller2.rightBumper().toggleOnTrue(Commands.sequence(new IntakeAlgaeOut(intakeAlgae),new InstantCommand(()->candle.algaeOff())));
-        controller2.leftTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralIn(intakeCoral),new InstantCommand(()->candle.coralOn())));
-        controller2.rightTrigger().toggleOnTrue(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())));
-
-        controller1.x().whileTrue(new BarbIn(barb));
-        controller3.y().whileTrue(new BarbOut(barb));
-
+        //strafe to nearest
         Command driveToNearestReefSideCommandLeft = new PathfindToNearestReef(drivetrain, true);
         Command driveToNearestReefSideCommandRight = new PathfindToNearestReef(drivetrain, false);
         Command driveToNearestStationSideCommand = new PathfindToNearestStation(drivetrain);
         controller1.leftBumper().onTrue(driveToNearestReefSideCommandLeft.until(controller1.b()));
         controller1.rightBumper().onTrue(driveToNearestReefSideCommandRight.until(controller1.b()));
         controller1.rightTrigger().onTrue(driveToNearestStationSideCommand.until(controller1.b()));
+
+        //barb commands
+        controller1.x().whileTrue(new BarbIn(barb));
+        controller1.a().whileTrue(new BarbInIgnoreLimit(barb));
+        controller3.y().whileTrue(new BarbOut(barb));
+
+        //elevator setpoints
+        controller2.a().onTrue(new AutoElevatorPivot(elevator, pivot, "L2"));
+        controller2.b().onTrue(new AutoElevatorPivot(elevator, pivot, "L3"));
+        controller2.y().onTrue(new AutoElevatorPivot(elevator, pivot, "L4"));
+        controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Processor"));
+        controller2.start().onTrue(new AutoElevatorPivot(elevator, pivot, "Rest"));
+
+        //manual elevator and pivot
+        controller2.povUp().whileTrue(new ManualElevatorUp(elevator));
+        controller2.povDown().whileTrue(new ManualElevatorDown(elevator));
+        controller2.povRight().whileTrue(new ManualPivotUp(pivot));
+        controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
+
+        //intakes and outtakes
+        controller2.leftBumper().toggleOnTrue(new IntakeAlgaeIn(intakeAlgae)); 
+        controller2.rightBumper().toggleOnTrue(new IntakeAlgaeOut(intakeAlgae));
+        controller2.leftTrigger().toggleOnTrue(new IntakeCoralIn(intakeCoral));
+        controller2.rightTrigger().toggleOnTrue(new IntakeCoralOut(intakeCoral));
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        //joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        //joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

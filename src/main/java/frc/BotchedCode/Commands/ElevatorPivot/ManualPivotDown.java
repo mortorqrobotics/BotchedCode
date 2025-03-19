@@ -1,20 +1,20 @@
-package frc.BotchedCode.Commands.ManualElevatorPivot;
+package frc.BotchedCode.Commands.ElevatorPivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Subsystems.Pivot;
 
-public class ManualPivotUp extends Command {
+public class ManualPivotDown extends Command {
 
     private final Pivot pivot;
 
-    public ManualPivotUp(Pivot pivot) {
+    public ManualPivotDown(Pivot pivot) {
         this.pivot = pivot;
         addRequirements(pivot);
     }
 
     @Override
     public void execute() {
-        pivot.up();
+        pivot.down();
     }
 
     @Override
@@ -22,3 +22,4 @@ public class ManualPivotUp extends Command {
         pivot.end();
     }
 }
+

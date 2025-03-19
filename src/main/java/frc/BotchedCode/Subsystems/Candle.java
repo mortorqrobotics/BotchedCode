@@ -2,7 +2,11 @@ package frc.BotchedCode.Subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import com.ctre.phoenix.led.CANdle;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.BotchedCode.Constants.RobotMap;
 
 public class Candle extends SubsystemBase{
     //private CANdle candle;
@@ -58,4 +62,20 @@ public class Candle extends SubsystemBase{
         //candle.setLEDs(r, g, b, 100, 0, 15);
         return;
     }
+
+    // @Override
+    // public void periodic(){
+    //     if (coralLedsOn.getAsBoolean()){
+    //         candle.setLEDs(255, 0, 0, 100, 0, 4);
+    //     }
+    //     else{
+    //         candle.setLEDs(0, 0, 0, 0, 0, 4);
+    //     }
+    //     if (algaeLedsOn.getAsBoolean()){
+    //         candle.setLEDs(0, 0, 255, 100, 4, 4);
+    //     }
+    //     else{
+    //         candle.setLEDs(0, 0, 0, 0,4, 4);
+    //     }
+    // }
 }
