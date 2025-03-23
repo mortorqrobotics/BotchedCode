@@ -23,22 +23,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.BotchedCode.Commands.Auto.ProcessorSide;
 import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbInIgnoreLimit;
 import frc.BotchedCode.Commands.Barb.BarbOut;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoElevatorPivot;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoScoreRoutine;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualPivotDown;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualPivotUp;
-import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoElevatorPivot;
-import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoScoreRoutine;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeIn;
 import frc.BotchedCode.Commands.Intakes.IntakeAlgaeOut;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralIn;
 import frc.BotchedCode.Commands.Intakes.IntakeCoralOut;
-import frc.BotchedCode.Commands.Pathfinding.PathfindToID;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestReef;
 import frc.BotchedCode.Commands.Pathfinding.PathfindToNearestStation;
 import frc.BotchedCode.Constants.RobotMap;
@@ -97,14 +96,6 @@ public class RobotContainer {
         barb = new Barb();
         candle = new Candle(()->intakeCoral.getLeds(), ()->intakeAlgae.getLeds());
 
-        NamedCommands.registerCommand("L3RoutineAlgae", Commands.sequence(Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.L3_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.L23_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        ), Commands.parallel(Commands.sequence(new IntakeCoralOut(intakeCoral),new InstantCommand(()->candle.coralOff())), Commands.sequence(new IntakeAlgaeIn(intakeAlgae),new InstantCommand(()->candle.algaeOn()))), Commands.sequence(
-            Commands.parallel(new InstantCommand(()-> elevator.setSetpoint(RobotMap.REST_HEIGHT)), new InstantCommand(()-> pivot.setSetpoint(RobotMap.REST_ANGLE))),
-            new WaitUntilCommand(() -> elevator.atSetpoint() && pivot.atSetpoint())
-        )));
-
         NamedCommands.registerCommand("L2Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L2"));
         NamedCommands.registerCommand("L3Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L3"));
         NamedCommands.registerCommand("L4Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L4"));
@@ -113,7 +104,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("L3Position", new AutoElevatorPivot(elevator, pivot, "L3"));
         NamedCommands.registerCommand("L4Position", new AutoElevatorPivot(elevator, pivot, "L4"));
         NamedCommands.registerCommand("RestPosition", new AutoElevatorPivot(elevator, pivot, "Rest"));
-        NamedCommands.registerCommand("ProcessorPosition", new AutoElevatorPivot(elevator, pivot, "Processor"));
+        
+        //NamedCommands.registerCommand("ProcessorPosition", new AutoElevatorPivot(elevator, pivot, "Processor"));
 
         NamedCommands.registerCommand("IntakeAlgae", new IntakeAlgaeIn(intakeAlgae));
         NamedCommands.registerCommand("OuttakeAlgae", new IntakeAlgaeOut(intakeAlgae));
@@ -122,21 +114,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Startup", Commands.parallel(new IntakeCoralIn(intakeCoral), new AutoElevatorPivot(elevator, pivot, "Rest")));
 
-        NamedCommands.registerCommand("Strafe To 6", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
-        NamedCommands.registerCommand("Strafe To 7", new PathfindToID(drivetrain, false,DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
-        NamedCommands.registerCommand("Strafe To 8", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 8 : 17));
-        NamedCommands.registerCommand("Strafe To 9", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 9 :22));
-        NamedCommands.registerCommand("Strafe To 10", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 10 : 21));
-        NamedCommands.registerCommand("Strafe To 11", new PathfindToID(drivetrain, false, DriverStation.getAlliance().get() == Alliance.Red ? 11 : 20));
-
-        NamedCommands.registerCommand("Strafe To alt6", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 6 : 19));
-        NamedCommands.registerCommand("Strafe To alt7", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 7 : 18));
-        NamedCommands.registerCommand("Strafe To alt8", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 8 : 17));
-        NamedCommands.registerCommand("Strafe To alt9", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 9 :22));
-        NamedCommands.registerCommand("Strafe To alt10", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 10 : 21));
-        NamedCommands.registerCommand("Strafe To alt11", new PathfindToID(drivetrain, true, DriverStation.getAlliance().get() == Alliance.Red ? 11 : 20));
-
         autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
+        autoChooser.addOption("ManualAuto", new ProcessorSide(drivetrain));
         SmartDashboard.putData("Auto Mode", autoChooser);
         SmartDashboard.putData("Reset Gyro", Commands.sequence(new InstantCommand(()->gyro.setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0)).ignoringDisable(true), new InstantCommand(()->drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get() == Alliance.Blue ? Math.PI: 0))).ignoringDisable(true)));
 
@@ -196,7 +175,7 @@ public class RobotContainer {
         controller2.a().onTrue(new AutoElevatorPivot(elevator, pivot, "L2"));
         controller2.b().onTrue(new AutoElevatorPivot(elevator, pivot, "L3"));
         controller2.y().onTrue(new AutoElevatorPivot(elevator, pivot, "L4"));
-        controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Processor"));
+        //controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Processor"));
         controller2.start().onTrue(new AutoElevatorPivot(elevator, pivot, "Rest"));
 
         //manual elevator and pivot
@@ -206,8 +185,8 @@ public class RobotContainer {
         controller2.povLeft().whileTrue(new ManualPivotDown(pivot));
 
         //intakes and outtakes
-        controller2.leftBumper().toggleOnTrue(new IntakeAlgaeIn(intakeAlgae)); 
-        controller2.rightBumper().toggleOnTrue(new IntakeAlgaeOut(intakeAlgae));
+        // controller2.leftBumper().toggleOnTrue(new IntakeAlgaeIn(intakeAlgae)); 
+        // controller2.rightBumper().toggleOnTrue(new IntakeAlgaeOut(intakeAlgae));
         controller2.leftTrigger().toggleOnTrue(new IntakeCoralIn(intakeCoral));
         controller2.rightTrigger().toggleOnTrue(new IntakeCoralOut(intakeCoral));
 

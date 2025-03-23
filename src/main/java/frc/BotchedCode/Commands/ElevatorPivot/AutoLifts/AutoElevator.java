@@ -16,6 +16,8 @@ public class AutoElevator extends Command {
         this.elevator = elevator;
         this.setpoint = setpoint;
 
+        this.elevatorSetpoints = new HashMap<>();
+
         this.elevatorSetpoints.put("Rest", RobotMap.REST_HEIGHT);
         this.elevatorSetpoints.put("L2", RobotMap.L2_HEIGHT);
         this.elevatorSetpoints.put("L3", RobotMap.L3_HEIGHT);
@@ -33,5 +35,12 @@ public class AutoElevator extends Command {
     @Override
     public boolean isFinished() {
         return elevator.atSetpoint();
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        if (setpoint.equals("Rest")){
+            elevator.resetCanRange();
+        }
     }
 }

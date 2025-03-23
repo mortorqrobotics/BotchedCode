@@ -3,6 +3,7 @@ package frc.BotchedCode.Subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,6 +19,7 @@ public class Elevator extends SubsystemBase{
     private double setpoint;
     private boolean encoderZeroed;
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    private CANrange canrange;
 
 
     public Elevator(){
@@ -42,6 +44,7 @@ public class Elevator extends SubsystemBase{
         mElevator.getConfigurator().apply(talonFXConfigs);
         
         //bottomSwitch = new DigitalInput(RobotMap.ELEVATOR_LIMIT_SWITCH_CHANNEL); //TODO
+        canrange = new CANrange(0, "1515Canivore");
         setpoint = 0;
         encoderZeroed = false;
         zeroEncoder(); //TODO
@@ -90,11 +93,25 @@ public class Elevator extends SubsystemBase{
         return Math.abs(getPosition()-setpoint)<0.3;
     }
 
+    public void resetCanRange(){
+        if (canrange.getDistance().getValueAsDouble()>0.05){
+            //mElevator.setPosition(canrange.getDistance().getValueAsDouble()*26.67 + 1.08);
+        }
+    }
+
+    // public void resetLimitSwitch(){
+    //     mElevator.setPosition(RobotMap.L2_HEIGHT);
+    // }
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Elevator encoder", mElevator.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Height", canrange.getDistance().getValueAsDouble());
         //if(encoderZeroed){
         mElevator.setControl(m_request.withPosition(setpoint));
+        // if (!bottomSwitch.get()){
+        //     resetLimitSwitch();
+        // }
         //}
     }
 }

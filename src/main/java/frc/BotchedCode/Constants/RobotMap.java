@@ -1,8 +1,5 @@
 package frc.BotchedCode.Constants;
 
-import java.io.*;
-import java.util.*;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
@@ -42,11 +39,11 @@ public class RobotMap {
     public static final double L4_PROCESSOR_HEIGHT = 29.25; //TODO
     public static final double REST_HEIGHT_LIMIT = 1.57; //TODO
 
-    public static final int ELEVATOR_ID = 21; //TODO
-    public static final int ELEVATOR2_ID = 22; //TODO
+    public static final int ELEVATOR_ID = 22; //TODO
+    public static final int ELEVATOR2_ID = 21; //TODO
     public static final double MANUAL_ELEVATOR_INCREMENTATION = 0; //TODO
     public static final double ELEVATOR_UPPER_LIMIT = 0; //TODO
-    public static final int ELEVATOR_LIMIT_SWITCH_CHANNEL = -1; //TODO
+    public static final int ELEVATOR_LIMIT_SWITCH_CHANNEL = 9; //TODO
     public static final double ELEVATOR_SPEED = 0.1; //TODO
 
     //Pivot
@@ -90,5 +87,10 @@ public class RobotMap {
     public static final double PIVOT_CURRENT_LIMIT = 3; //TODO
     
     public static final int CANDLE_ID = 0;
+
+    public static final double REEF_POLE_DISTANCE = 0.33;
+    public static final double farOffsetY = 0.25;
+    public static final double nearOffsetY = 0.09;
+    public static final double offsetX = 0.65;
 
 }

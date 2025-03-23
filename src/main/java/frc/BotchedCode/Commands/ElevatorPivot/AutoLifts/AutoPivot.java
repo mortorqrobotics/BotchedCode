@@ -16,6 +16,7 @@ public class AutoPivot extends Command {
         this.pivot = pivot;
         this.setpoint = setpoint;
 
+        this.pivotSetpoints = new HashMap<>();
         this.pivotSetpoints.put("Rest", RobotMap.REST_ANGLE);
         this.pivotSetpoints.put("L2", RobotMap.L23_ANGLE);
         this.pivotSetpoints.put("L3", RobotMap.L23_ANGLE);

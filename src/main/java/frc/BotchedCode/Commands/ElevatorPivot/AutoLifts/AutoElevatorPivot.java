@@ -10,6 +10,7 @@ public class AutoElevatorPivot extends SequentialCommandGroup {
     public AutoElevatorPivot(Elevator elevator, Pivot pivot, String setpoint){
         addCommands(
 
+            
             Commands.sequence(new AutoElevator(elevator, setpoint), new AutoPivot(pivot, setpoint))
 
         );

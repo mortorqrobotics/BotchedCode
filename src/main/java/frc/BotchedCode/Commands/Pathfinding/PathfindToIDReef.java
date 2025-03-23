@@ -19,10 +19,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
+import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PathfindToID extends Command {
+public class PathfindToIDReef extends Command {
   private Command fullPath;
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
@@ -34,7 +35,7 @@ public class PathfindToID extends Command {
   private int timer;
 
   /** Creates a new PathfindToNearest. */
-  public PathfindToID(CommandSwerveDrivetrain drive, boolean isLeftBumper, int id) {
+  public PathfindToIDReef(CommandSwerveDrivetrain drive, boolean isLeftBumper, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     this.isLeftBumper = isLeftBumper;
@@ -63,7 +64,7 @@ public class PathfindToID extends Command {
               Units.degreesToRadians(maxAngAccel)),
           null,
           new GoalEndState(0.0, closestAprilTagPose.getRotation()));
-      pathToFront.preventFlipping = true;
+      //pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
       fullPath.schedule();
     } catch (Exception e) {
@@ -94,31 +95,30 @@ public class PathfindToID extends Command {
 
   private Pose2d getClosestReefAprilTagPose() {
     HashMap<Integer, Pose2d> aprilTagsToAlignTo = AprilTagPositions.WELDED_BLUE_CORAL_APRIL_TAG_POSITIONS;
+    Integer aprilTagNum = id;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
         aprilTagsToAlignTo = AprilTagPositions.WELDED_RED_CORAL_APRIL_TAG_POSITIONS;
       }
     }
-
-    Integer aprilTagNum = id;
     Pose2d closestPose = aprilTagsToAlignTo.get(id);
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -0.64);
+        -RobotMap.offsetX);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.22);
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, RobotMap.farOffsetY);
     } else {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.1);
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -RobotMap.nearOffsetY);
     }
 
     if (List.of(11, 10, 9, 22, 21, 20).contains(aprilTagNum)) {
       if (isLeftBumper) {
-        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -0.22);
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -RobotMap.nearOffsetY);
       } else {
-        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.1);
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, RobotMap.farOffsetY);
       }
     }
 

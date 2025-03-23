@@ -6,7 +6,6 @@ package frc.BotchedCode.Commands.Pathfinding;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -17,26 +16,29 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
-import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PathfindToNearestReef extends Command {
+public class PathfindToIDStation extends Command {
   private Command fullPath;
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
   private double maxLinAccel = 2.0;
-  private double maxLinVel = 3.0;
+  private double maxLinVel = 2.0;
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
+  private int id;
+  private int timer;
 
   /** Creates a new PathfindToNearest. */
-  public PathfindToNearestReef(CommandSwerveDrivetrain drive, boolean isLeftBumper) {
+  public PathfindToIDStation(CommandSwerveDrivetrain drive, boolean isLeftBumper, int id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     this.isLeftBumper = isLeftBumper;
+    this.id = id;
 
     addRequirements(drive);
   }
@@ -44,21 +46,23 @@ public class PathfindToNearestReef extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer = 0;
     Pose2d closestAprilTagPose = getClosestReefAprilTagPose();
     Command pathfindPath = AutoBuilder.pathfindToPose(
-      translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
-        new PathConstraints(maxLinVel, maxLinAccel, Units.degreesToRadians(maxAngVel), Units.degreesToRadians(maxAngAccel)));
+        translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
+        new PathConstraints(maxLinVel, maxLinAccel, Units.degreesToRadians(maxAngVel),
+            Units.degreesToRadians(maxAngAccel)));
 
     try {
       // Load the path you want to follow using its name in the GUI
       PathPlannerPath pathToFront = new PathPlannerPath(
           PathPlannerPath.waypointsFromPoses(
-            translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
+              translateCoord(closestAprilTagPose, closestAprilTagPose.getRotation().getDegrees(), -0.5),
               closestAprilTagPose),
-          new PathConstraints(maxLinVel, maxLinAccel, Units.degreesToRadians(maxAngVel), Units.degreesToRadians(maxAngAccel)),
-          null, 
-          new GoalEndState(0.0, closestAprilTagPose.getRotation())
-      );
+          new PathConstraints(maxLinVel, maxLinAccel, Units.degreesToRadians(maxAngVel),
+              Units.degreesToRadians(maxAngAccel)),
+          null,
+          new GoalEndState(0.0, closestAprilTagPose.getRotation()));
       pathToFront.preventFlipping = true;
       fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
       fullPath.schedule();
@@ -69,7 +73,9 @@ public class PathfindToNearestReef extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    timer ++;
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -82,49 +88,36 @@ public class PathfindToNearestReef extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    SmartDashboard.putBoolean("Path Finished", fullPath.isFinished());
+    return fullPath.isFinished() || timer > 80;
   }
 
   private Pose2d getClosestReefAprilTagPose() {
-    HashMap<Integer, Pose2d> aprilTagsToAlignTo = AprilTagPositions.WELDED_BLUE_CORAL_APRIL_TAG_POSITIONS;
+    HashMap<Integer, Pose2d> aprilTagsToAlignTo = AprilTagPositions.WELDED_BLUE_STATION_APRIL_TAG_POSITIONS;
+    Integer aprilTagNum = id;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
-        aprilTagsToAlignTo = AprilTagPositions.WELDED_RED_CORAL_APRIL_TAG_POSITIONS;
+        aprilTagsToAlignTo = AprilTagPositions.WELDED_RED_STATION_APRIL_TAG_POSITIONS;
       }
     }
-
-    Pose2d currentPose = drive.getState().Pose;
-    Pose2d closestPose = new Pose2d();
-    double closestDistance = Double.MAX_VALUE;
-    Integer aprilTagNum = -1;
-
-    for (Map.Entry<Integer, Pose2d> entry : aprilTagsToAlignTo.entrySet()) {
-      Pose2d pose = entry.getValue();
-      double distance = findDistanceBetween(currentPose, pose);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestPose = pose;
-        aprilTagNum = entry.getKey();
-      }
-    }
+    Pose2d closestPose = aprilTagsToAlignTo.get(id);
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -RobotMap.offsetX);
+        -0.45);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, RobotMap.farOffsetY);
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.0);
     } else {
-      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -RobotMap.nearOffsetY);
+      leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.0);
     }
-
 
     if (List.of(11, 10, 9, 22, 21, 20).contains(aprilTagNum)) {
       if (isLeftBumper) {
-        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, -RobotMap.nearOffsetY);
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.0);
       } else {
-        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, RobotMap.farOffsetY);
+        leftOrRightOfAprilTag = translateCoord(inFrontOfAprilTag, closestPose.getRotation().getDegrees() + 90, 0.0);
       }
     }
 
@@ -136,9 +129,5 @@ public class PathfindToNearestReef extends Command {
     double newYCoord = originalPose.getY() + (Math.sin(Math.toRadians(degreesRotate)) * distance);
 
     return new Pose2d(newXCoord, newYCoord, originalPose.getRotation());
-  }
-
-  private double findDistanceBetween(Pose2d pose1, Pose2d pose2) {
-    return Math.sqrt(Math.pow((pose2.getX() - pose1.getX()), 2) + Math.pow((pose2.getY() - pose1.getY()), 2));
   }
 }
