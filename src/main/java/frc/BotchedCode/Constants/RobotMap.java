@@ -30,13 +30,13 @@ public class RobotMap {
 
 
     //Elevator
-    public static final double L2_HEIGHT = 5.5; //TODO
-    public static final double L3_HEIGHT = L2_HEIGHT+10; //TODO
-    public static final double L4_HEIGHT = 33.75; //TODO
+    public static final double L2_HEIGHT = 5.5*1.6244; //TODO
+    public static final double L3_HEIGHT = 15.5*1.6244 ; //TODO
+    public static final double L4_HEIGHT = 33.75*1.6244+3; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
-    public static final double REST_HEIGHT = 4; //TODO
-    public static final double PROCESSOR_HEIGHT = 4; //TODO
-    public static final double L4_PROCESSOR_HEIGHT = 29.25; //TODO
+    public static final double REST_HEIGHT = 4*1.6244-1; //TODO
+    public static final double PROCESSOR_HEIGHT = 4*1.6244; //TODO
+    public static final double L4_PROCESSOR_HEIGHT = 29.25*1.6244; //TODO
     public static final double REST_HEIGHT_LIMIT = 1.57; //TODO
 
     public static final int ELEVATOR_ID = 22; //TODO
@@ -47,8 +47,8 @@ public class RobotMap {
     public static final double ELEVATOR_SPEED = 0.1; //TODO
 
     //Pivot
-    public static final double L23_ANGLE = 13; //TODO
-    public static final double L4_ANGLE =10.25; //TODO
+    public static final double L23_ANGLE = 12; //TODO
+    public static final double L4_ANGLE =9.25; //TODO
     public static final double CORAL_STATION_ANGLE = 25; //TODO
     public static final double REST_ANGLE = 25;
     public static final double PROCESSOR_ANGLE = 27; //TODO
@@ -89,8 +89,8 @@ public class RobotMap {
     public static final int CANDLE_ID = 0;
 
     public static final double REEF_POLE_DISTANCE = 0.33;
-    public static final double farOffsetY = 0.25;
-    public static final double nearOffsetY = 0.09;
+    public static final double farOffsetY = REEF_POLE_DISTANCE/2;
+    public static final double nearOffsetY = REEF_POLE_DISTANCE/2;
     public static final double offsetX = 0.65;
 
 }
