@@ -38,6 +38,12 @@
         {
           "type": "named",
           "data": {
+            "name": "RestPosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "IntakeCoral"
           }
         },
@@ -57,6 +63,12 @@
           "type": "path",
           "data": {
             "pathName": "7 to 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RestPosition"
           }
         },
         {

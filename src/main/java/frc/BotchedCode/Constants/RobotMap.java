@@ -30,8 +30,8 @@ public class RobotMap {
 
 
     //Elevator
-    public static final double L2_HEIGHT = 5.5*1.6244; //TODO
-    public static final double L3_HEIGHT = 15.5*1.6244 ; //TODO
+    public static final double L2_HEIGHT = 6.5*1.6244; //TODO
+    public static final double L3_HEIGHT = 16.5*1.6244 ; //TODO
     public static final double L4_HEIGHT = 33.75*1.6244+3; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
     public static final double REST_HEIGHT = 4*1.6244-1; //TODO

@@ -11,7 +11,7 @@ public class AutoElevatorPivot extends SequentialCommandGroup {
         addCommands(
 
             
-            Commands.sequence(new AutoElevator(elevator, setpoint), new AutoPivot(pivot, setpoint))
+            Commands.parallel(new AutoElevator(elevator, setpoint), new AutoPivot(pivot, setpoint))
 
         );
     }
