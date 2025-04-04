@@ -7,7 +7,7 @@ package frc.BotchedCode;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +18,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.BotchedCode.Constants.RobotMap;
 import frc.BotchedCode.Constants.TunerConstants;
@@ -46,12 +47,12 @@ public class RobotContainer {
     public Pigeon2 gyro = new Pigeon2(RobotMap.PIGEON_ID);
 
     /* Path follower */
-    private final SendableChooser<Command> autoChooser;
+    // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
 
-        autoChooser = AutoBuilder.buildAutoChooser("New Auto");
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        // autoChooser = AutoBuilder.buildAutoChooser("New Auto");
+        // SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
     }
@@ -109,8 +110,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
-        System.out.println(autoChooser.getSelected().getName());
-        return autoChooser.getSelected();
+        // System.out.println(autoChooser.getSelected().getName());
+        // return autoChooser.getSelected();
+        return new InstantCommand(()->System.out.print("nuh uh"));
     }
 
     public static CommandSwerveDrivetrain createDrivetrain() {
