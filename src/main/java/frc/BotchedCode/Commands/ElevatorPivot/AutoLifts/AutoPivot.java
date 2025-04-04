@@ -22,6 +22,7 @@ public class AutoPivot extends Command {
         this.pivotSetpoints.put("L3", RobotMap.L23_ANGLE);
         this.pivotSetpoints.put("L4", RobotMap.L4_ANGLE);
         this.pivotSetpoints.put("Processor", RobotMap.PROCESSOR_ANGLE);
+        this.pivotSetpoints.put("Up", RobotMap.UP_ANGLE);
 
         addRequirements(pivot);
     }

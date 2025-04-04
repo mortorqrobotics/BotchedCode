@@ -23,6 +23,7 @@ public class AutoElevator extends Command {
         this.elevatorSetpoints.put("L3", RobotMap.L3_HEIGHT);
         this.elevatorSetpoints.put("L4", RobotMap.L4_HEIGHT);
         this.elevatorSetpoints.put("Processor", RobotMap.PROCESSOR_HEIGHT);
+        this.elevatorSetpoints.put("Up", RobotMap.REST_HEIGHT);
 
         addRequirements(elevator);
     }

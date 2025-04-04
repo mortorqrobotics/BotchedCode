@@ -29,7 +29,9 @@ import frc.BotchedCode.Commands.Barb.BarbIn;
 import frc.BotchedCode.Commands.Barb.BarbInIgnoreLimit;
 import frc.BotchedCode.Commands.Barb.BarbOut;
 import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoElevatorPivot;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoPivot;
 import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.AutoScoreRoutine;
+import frc.BotchedCode.Commands.ElevatorPivot.AutoLifts.TeleopElevatorPivot;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorDown;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualElevatorUp;
 import frc.BotchedCode.Commands.ElevatorPivot.ManualPivotDown;
@@ -99,6 +101,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("L2Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L2"));
         NamedCommands.registerCommand("L3Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L3"));
         NamedCommands.registerCommand("L4Routine", new AutoScoreRoutine(elevator, pivot, intakeCoral, "L4"));
+        NamedCommands.registerCommand("UpAngle", new AutoPivot(pivot, "Up"));
 
         NamedCommands.registerCommand("L2Position", new AutoElevatorPivot(elevator, pivot, "L2"));
         NamedCommands.registerCommand("L3Position", new AutoElevatorPivot(elevator, pivot, "L3"));
@@ -112,7 +115,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCoral", new IntakeCoralIn(intakeCoral));
         NamedCommands.registerCommand("OuttakeCoral", new IntakeCoralOut(intakeCoral));
 
-        NamedCommands.registerCommand("Startup", Commands.parallel(new IntakeCoralIn(intakeCoral), new AutoElevatorPivot(elevator, pivot, "Rest")));
+        NamedCommands.registerCommand("Startup", Commands.parallel(new IntakeCoralIn(intakeCoral), new AutoElevatorPivot(elevator, pivot, "Up")));
 
         autoChooser = AutoBuilder.buildAutoChooser("0 Auto");
         autoChooser.addOption("ManualAuto", new ProcessorSide(drivetrain));
@@ -172,11 +175,11 @@ public class RobotContainer {
         controller3.y().whileTrue(new BarbOut(barb));
 
         //elevator setpoints
-        controller2.a().onTrue(new AutoElevatorPivot(elevator, pivot, "L2"));
-        controller2.b().onTrue(new AutoElevatorPivot(elevator, pivot, "L3"));
-        controller2.y().onTrue(new AutoElevatorPivot(elevator, pivot, "L4"));
-        //controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Processor"));
-        controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Rest"));
+        controller2.a().onTrue(new TeleopElevatorPivot(elevator, pivot, "L2"));
+        controller2.b().onTrue(new TeleopElevatorPivot(elevator, pivot, "L3"));
+        controller2.y().onTrue(new TeleopElevatorPivot(elevator, pivot, "L4"));
+        //controller2.x().onTrue(new TeleopElevatorPivot(elevator, pivot, "Processor"));
+        controller2.x().onTrue(new TeleopElevatorPivot(elevator, pivot, "Rest"));
 
         //manual elevator and pivot
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));

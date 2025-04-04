@@ -46,7 +46,7 @@ def conversion(tag, offCenter):
 
 def stConversion(tag, offCenter):
     x,y,angle = tag[0], tag[1], tag[2]
-    xOffset = 0.4
+    xOffset = 0.43
     yOffset = -0.03
     angleOffset = math.atan(yOffset/xOffset)
     dist = math.sqrt(xOffset**2 + yOffset**2)

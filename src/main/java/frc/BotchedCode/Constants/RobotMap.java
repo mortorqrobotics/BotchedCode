@@ -31,7 +31,7 @@ public class RobotMap {
 
     //Elevator
     public static final double L2_HEIGHT = 6.5*1.6244; //TODO
-    public static final double L3_HEIGHT = 16.5*1.6244 ; //TODO
+    public static final double L3_HEIGHT = 16.5*1.6244 +1; //TODO
     public static final double L4_HEIGHT = 33.75*1.6244+3.5; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
     public static final double REST_HEIGHT = 5.5; //TODO
@@ -52,7 +52,8 @@ public class RobotMap {
     public static final double CORAL_STATION_ANGLE = 25; //TODO
     public static final double REST_ANGLE = 23;
     public static final double PROCESSOR_ANGLE = 27; //TODO
-    public static final double REST_ANGLE_LIMIT = 34; //TODO
+    public static final double REST_ANGLE_LIMIT = 34;
+    public static final double UP_ANGLE = 31; //TODO
 
     public static final int PIVOT_ID = 23; //TODO
     public static final int PIVOT_CANCODER_ID = 24; //TODO
@@ -93,5 +94,6 @@ public class RobotMap {
     public static final double farOffsetY = REEF_POLE_DISTANCE/2;
     public static final double nearOffsetY = REEF_POLE_DISTANCE/2;
     public static final double offsetX = .65;
+    
 
 }
