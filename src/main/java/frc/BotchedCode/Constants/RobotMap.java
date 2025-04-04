@@ -34,7 +34,7 @@ public class RobotMap {
     public static final double L3_HEIGHT = 16.5*1.6244 ; //TODO
     public static final double L4_HEIGHT = 33.75*1.6244+3.5; //TODO
     public static final double CORAL_STATION_HEIGHT = 0; //TODO
-    public static final double REST_HEIGHT = 9; //TODO
+    public static final double REST_HEIGHT = 5.5; //TODO
     public static final double PROCESSOR_HEIGHT = 4*1.6244; //TODO
     public static final double L4_PROCESSOR_HEIGHT = 29.25*1.6244; //TODO
     public static final double REST_HEIGHT_LIMIT = 1.57; //TODO
@@ -79,6 +79,7 @@ public class RobotMap {
 
 
     public static final double BARB_SPEED = 0.6;//TODO 
+    public static final double BARB_SPEED_FAST = 0.8;//FAST
     public static final int BARB_ID = 29;//TODO 
 
 
@@ -91,7 +92,6 @@ public class RobotMap {
     public static final double REEF_POLE_DISTANCE = 0.33;
     public static final double farOffsetY = REEF_POLE_DISTANCE/2;
     public static final double nearOffsetY = REEF_POLE_DISTANCE/2;
-    public static final double offsetX = 
-    .63;
+    public static final double offsetX = .65;
 
 }

@@ -27,8 +27,8 @@ public class PathfindToNearestReef extends Command {
   private Command fullPath;
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
-  private double maxLinAccel = 2.0;
-  private double maxLinVel = 3.0;
+  private double maxLinAccel = 2.5;
+  private double maxLinVel = 3.5;
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
 

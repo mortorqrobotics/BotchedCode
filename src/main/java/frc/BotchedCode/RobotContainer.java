@@ -176,7 +176,7 @@ public class RobotContainer {
         controller2.b().onTrue(new AutoElevatorPivot(elevator, pivot, "L3"));
         controller2.y().onTrue(new AutoElevatorPivot(elevator, pivot, "L4"));
         //controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Processor"));
-        controller2.start().onTrue(new AutoElevatorPivot(elevator, pivot, "Rest"));
+        controller2.x().onTrue(new AutoElevatorPivot(elevator, pivot, "Rest"));
 
         //manual elevator and pivot
         controller2.povUp().whileTrue(new ManualElevatorUp(elevator));

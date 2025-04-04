@@ -25,8 +25,8 @@ public class PathfindToNearestStation extends Command {
   private Command fullPath;
   private CommandSwerveDrivetrain drive;
   private boolean isLeftBumper = false;
-  private double maxLinAccel = 2.0;
-  private double maxLinVel = 3.0;
+  private double maxLinAccel = 2.5;
+  private double maxLinVel = 3.5;
   private double maxAngAccel = 360.0;
   private double maxAngVel = 180.0;
 
@@ -107,7 +107,7 @@ public class PathfindToNearestStation extends Command {
     }
 
     Pose2d inFrontOfAprilTag = translateCoord(closestPose, closestPose.getRotation().getDegrees(),
-        -0.45);
+        0.45);
 
     Pose2d leftOrRightOfAprilTag;
     if (isLeftBumper) {
