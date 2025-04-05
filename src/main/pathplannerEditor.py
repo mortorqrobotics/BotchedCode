@@ -33,8 +33,8 @@ blueToRed = {v: k for k, v in redToBlue.items()}
 
 def conversion(tag, offCenter):
     x,y,angle = tag[0], tag[1], tag[2]
-    xOffset = 0.61
-    dist = 0.33
+    xOffset = 0.62
+    dist = 0.35
     yOffset = -dist/2 if offCenter else dist/2
     angleOffset = math.atan(yOffset/xOffset)
     dist = math.sqrt(xOffset**2 + yOffset**2)

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.7909708424818005,
-        "y": 6.866025549464354
+        "x": 8.511270491803279,
+        "y": 7.843084016393442
       },
       "isLocked": false,
       "linkedName": "10"
@@ -20,12 +20,12 @@
         "y": 7.03
       },
       "prevControl": {
-        "x": 2.743493919077361,
-        "y": 4.903817231234944
+        "x": 7.3364754098360665,
+        "y": 7.111834016393442
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "1"
+      "linkedName": "1alt"
     }
   ],
   "rotationTargets": [],

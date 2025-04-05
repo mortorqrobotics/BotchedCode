@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.BotchedCode.Constants.AprilTagPositions;
 import frc.BotchedCode.Constants.RobotMap;
+import frc.BotchedCode.RobotContainer;
 import frc.BotchedCode.Subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -60,7 +61,7 @@ public class PathfindToNearestReef extends Command {
           new GoalEndState(0.0, closestAprilTagPose.getRotation())
       );
       pathToFront.preventFlipping = true;
-      fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront));
+      fullPath = pathfindPath.andThen(AutoBuilder.followPath(pathToFront)).until(RobotContainer.controller1.b());
       fullPath.schedule();
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
